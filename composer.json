@@ -1,0 +1,49 @@
+{
+	"name": "lemuria-pbem/tools-lemuria",
+	"description": "This library contains tools and helper classes for the Lemuria game model.",
+	"type": "library",
+	"keywords": [
+		"eressea",
+		"fantasya",
+		"game",
+		"import",
+		"lemuria",
+		"pbem",
+		"tools"
+	],
+	"time": "2020-07-11",
+	"license": "GPL-3.0",
+	"authors": [
+		{
+			"name": "Sascha Ternes",
+			"email": "lemuria@online.de"
+		}
+	],
+
+	"require": {
+		"php": "~7.4",
+		"ext-json": "*",
+		"ext-pdo": "*",
+		"lemuria-pbem/lemuria": "dev-master",
+		"lemuria-pbem/model-lemuria": "dev-master"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "~9.2"
+	},
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "git@github.com:lemuria-pbem/lemuria.git"
+		},
+		{
+			"type": "vcs",
+			"url": "git@github.com:lemuria-pbem/model-lemuria.git"
+		}
+	],
+
+	"autoload": {
+		"psr-4": {
+			"Lemuria\\Tools\\Lemuria\\": "src/"
+		}
+	}
+}
