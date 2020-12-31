@@ -2,6 +2,8 @@
 declare (strict_types = 1);
 namespace Lemuria\Tools\Lemuria\Fantasya;
 
+use JetBrains\PhpStorm\Pure;
+
 use function Lemuria\getClass;
 use Lemuria\Model\Lemuria\Ability;
 use Lemuria\Model\Lemuria\Building\AbstractCastle;
@@ -95,10 +97,6 @@ use Lemuria\Model\Lemuria\Talent\Woodchopping;
 
 final class Converter
 {
-	/**
-	 * @param string $typ
-	 * @return string
-	 */
 	public function landscape(string $typ): string {
 		switch ($typ) {
 			case 'Ozean' :
@@ -122,10 +120,6 @@ final class Converter
 		}
 	}
 
-	/**
-	 * @param string $resource
-	 * @return string
-	 */
 	public function resource(string $resource): string {
 		switch ($resource) {
 			case 'Holz' :
@@ -152,11 +146,6 @@ final class Converter
 		}
 	}
 
-	/**
-	 * @param string $type
-	 * @param int $size
-	 * @return string
-	 */
 	public function building(string $type, int $size): string {
 		switch ($type) {
 			case 'Burg' :
@@ -171,10 +160,6 @@ final class Converter
 		}
 	}
 
-	/**
-	 * @param string $race
-	 * @return string
-	 */
 	public function race(string $race): string {
 		switch ($race) {
 			case 'Aquaner' :
@@ -205,10 +190,6 @@ final class Converter
 		}
 	}
 
-	/**
-	 * @param string $ship
-	 * @return string
-	 */
 	public function ship(string $ship): string {
 		switch ($ship) {
 			case 'Boot' :
@@ -228,18 +209,10 @@ final class Converter
 		}
 	}
 
-	/**
-	 * @param string $anchor
-	 * @return string
-	 */
-	public function anchor(string $anchor): string {
+	#[Pure] public function anchor(string $anchor): string {
 		return str_replace('O', 'E', $anchor);
 	}
 
-	/**
-	 * @param string $talent
-	 * @return string
-	 */
 	public function talent(string $talent): string {
 		switch ($talent) {
 			case 'Armbrustschiessen' :
@@ -307,10 +280,6 @@ final class Converter
 		}
 	}
 
-	/**
-	 * @param string $commodity
-	 * @return string
-	 */
 	public function commodity(string $commodity): string {
 		switch ($commodity) {
 			case 'Armbrust' :
@@ -386,10 +355,6 @@ final class Converter
 		}
 	}
 
-	/**
-	 * @param string $kampfposition
-	 * @return int
-	 */
 	public function battleRow(string $kampfposition): int {
 		switch ($kampfposition) {
 			case 'Vorne' :
@@ -407,21 +372,12 @@ final class Converter
 		}
 	}
 
-	/**
-	 * @param int $lerntage
-	 * @param int $size
-	 * @return int
-	 */
 	public function experience(int $lerntage, int $size): int {
 		$level      = (int)sqrt($lerntage / ($size * 15));
 		$experience = Ability::getExperience($level);
 		return $experience;
 	}
 
-	/**
-	 * @param string $option
-	 * @return int
-	 */
 	public function agreement(string $option): int {
 		switch (strtolower($option)) {
 			case 'gib' :
@@ -443,10 +399,6 @@ final class Converter
 		}
 	}
 
-	/**
-	 * @param string $luxus
-	 * @return string
-	 */
 	public function luxury(string $luxus): string {
 		switch ($luxus) {
 			case 'Balsam' :
@@ -470,11 +422,6 @@ final class Converter
 		}
 	}
 
-	/**
-	 * @param Luxury $luxury
-	 * @param int $nachfrage
-	 * @return int
-	 */
 	public function demand(Luxury $luxury, int $nachfrage): int {
 		if ($nachfrage > 100000) {
 			throw new \InvalidArgumentException('Invalid demand: ' . $nachfrage);

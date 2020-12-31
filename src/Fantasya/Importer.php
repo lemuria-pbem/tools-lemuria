@@ -2,6 +2,8 @@
 declare(strict_types = 1);
 namespace Lemuria\Tools\Lemuria\Fantasya;
 
+use JetBrains\PhpStorm\Pure;
+
 use Lemuria\Lemuria;
 use function Lemuria\getClass;
 use Lemuria\Exception\EntitySetException;
@@ -65,17 +67,11 @@ class Importer
 
 	private int $world = 1;
 
-	/**
-	 * @param \PDO $database
-	 */
-	public function __construct(\PDO $database) {
+	#[Pure] public function __construct(\PDO $database) {
 		$this->database  = $database;
 		$this->converter = new Converter();
 	}
 
-	/**
-	 * @return Importer
-	 */
 	public function import(): Importer {
 		$this->importMap();
 		$this->importRegions();
@@ -87,10 +83,6 @@ class Importer
 		return $this;
 	}
 
-	/**
-	 * @param string $storage
-	 * @return Importer
-	 */
 	public function save(string $storage): Importer {
 		Lemuria::Log()->debug('Saving JSON files...');
 		if (!is_dir($storage)) {
