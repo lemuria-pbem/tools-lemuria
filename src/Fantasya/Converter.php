@@ -387,7 +387,7 @@ final class Converter
 			case 'kaempfe' :
 				return Relation::COMBAT;
 			case 'kontaktiere' :
-				return Relation::TRADE | Relation::RESOURCES | Relation::ENTER;
+				return Relation::TELL | Relation::TRADE | Relation::RESOURCES | Relation::ENTER;
 			case 'resourcen' :
 				return Relation::RESOURCES;
 			case 'steuern' :
