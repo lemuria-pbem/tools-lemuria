@@ -10,6 +10,14 @@ final class Map
 
 	public const TYPE = 1;
 
+	public const TERRAIN_OCEAN = 0;
+
+	public const TERRAIN_PLAIN = 1;
+
+	public const TERRAIN_HIGHLAND = 2;
+
+	public const TERRAIN_MOUNTAIN = 3;
+
 	private int $width;
 
 	private int $height;

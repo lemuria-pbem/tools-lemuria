@@ -48,24 +48,4 @@ class MapGenerator
 
 		return $this;
 	}
-
-	public function getMap(): Map {
-		$minX = $this->config->offsetX + $this->config->edge;
-		$maxX = $this->config->maxX - $this->config->edge;
-		$minY = $this->config->offsetY + $this->config->edge;
-		$maxY = $this->config->maxY - $this->config->edge;
-
-		for ($y = $minY; $y < $maxY; $y++) {
-			for ($x = $minX; $x < $maxX; $x++) {
-				$altitude = $this->map[$y][$x][Map::ALTITUDE];
-				$this->map[$y][$x][Map::TYPE] = match (true) {
-					$altitude >= $this->config->mountain => 3,
-					$altitude >= $this->config->highland => 2,
-					$altitude >= $this->config->lowLand => 1,
-					default => 0
-				};
-			}
-		}
-		return new Map($this->map);
-	}
 }
