@@ -30,7 +30,7 @@ trait Terrain
 				};
 			}
 		}
-		return new Map($this->map);
+		return new Map($this->map, Map::TYPE);
 	}
 
 	private function calculateTerrain(MapConfig $config, array &$map): void {

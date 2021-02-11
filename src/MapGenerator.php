@@ -27,7 +27,15 @@ class MapGenerator
 	private array $quartz = ['amount' => 450, 'count' => 21, 'depth' => -4, 'd' => 2, 'a' => 3];
 
 	private array $region = [
-		Map::ALTITUDE => MapConfig::OCEAN, Map::TYPE => 0
+		Map::ALTITUDE      => MapConfig::OCEAN,
+		Map::TYPE          => 0,
+		Map::MOISTURE      => 0.0,
+		Map::PRECIPITATION => 0.0,
+		Map::POTENTIAL     => 0.0,
+		Map::BOOL          => 0,
+		Map::DIRECTION     => Map::DIRECTION_NONE,
+		Map::FLOW          => 0.0,
+		Map::VEGETATION    => Map::VEGETATION_NONE
 	];
 
 	private MapConfig $config;

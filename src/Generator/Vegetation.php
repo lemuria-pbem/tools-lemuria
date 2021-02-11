@@ -28,7 +28,7 @@ trait Vegetation
 				};
 			}
 		}
-		return new Map($this->map);
+		return new Map($this->map, Map::VEGETATION);
 	}
 
 	private function calculateVegetation(MapConfig $config, array &$map): void {
