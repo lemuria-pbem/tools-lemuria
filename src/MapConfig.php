@@ -75,7 +75,7 @@ final class MapConfig
 	public int $maxDiff = 200;
 
 	/**
-	 * Maximm influence distance for altitude interpolation.
+	 * Maximum influence distance for altitude interpolation.
 	 */
 	public int $influence = 3;
 
@@ -118,4 +118,22 @@ final class MapConfig
 	public float $breeding = 15.0;
 
 	public float $hunting = 45.0;
+
+	public array $status = [];
+
+	public function load(array $config): void {
+		foreach ($config as $name => $value) {
+			$this->$name = $value;
+		}
+	}
+
+	public function save(): array {
+		$data       = [];
+		$reflection = new \ReflectionClass($this);
+		foreach ($reflection->getProperties() as $property) {
+			$name        = $property->name;
+			$data[$name] = $this->$name;
+		}
+		return $data;
+	}
 }

@@ -4,8 +4,10 @@ namespace Lemuria\Tools\Lemuria\Generator;
 
 use JetBrains\PhpStorm\Pure;
 
+use Lemuria\Tools\Lemuria\Direction;
 use Lemuria\Tools\Lemuria\Map;
 use Lemuria\Tools\Lemuria\MapConfig;
+use Lemuria\Tools\Lemuria\Moisture;
 
 trait WaterFlow
 {
@@ -18,6 +20,9 @@ trait WaterFlow
 	private array $map;
 
 	private function calculateWaterFlow(MapConfig $config, array &$map): void {
+		if ($config->status[__FUNCTION__] ?? false) {
+			return;
+		}
 		$this->config = $config;
 		$this->map    =& $map;
 		$minX = $this->config->offsetX + $this->config->edge;
@@ -31,12 +36,12 @@ trait WaterFlow
 			for ($x = $minX; $x < $maxX; $x++) {
 				$minimum = $map[$y][$x][Map::ALTITUDE];
 				if ($minimum > 0) {
-					$direction = $this->minimumAltitude($minimum, Map::DIRECTION_NONE, Map::DIRECTION_NE, $x, $y, 0, 1);
-					$direction = $this->minimumAltitude($minimum, $direction, Map::DIRECTION_E, $x, $y, 1, 0);
-					$direction = $this->minimumAltitude($minimum, $direction, Map::DIRECTION_SE, $x, $y, 1, -1);
-					$direction = $this->minimumAltitude($minimum, $direction, Map::DIRECTION_SW, $x, $y, 0, -1);
-					$direction = $this->minimumAltitude($minimum, $direction, Map::DIRECTION_W, $x, $y, -1, 0);
-					$direction = $this->minimumAltitude($minimum, $direction, Map::DIRECTION_NW, $x, $y, -1, 1);
+					$direction = $this->minimumAltitude($minimum, Direction::NONE, Direction::NE, $x, $y, 0, 1);
+					$direction = $this->minimumAltitude($minimum, $direction, Direction::E, $x, $y, 1, 0);
+					$direction = $this->minimumAltitude($minimum, $direction, Direction::SE, $x, $y, 1, -1);
+					$direction = $this->minimumAltitude($minimum, $direction, Direction::SW, $x, $y, 0, -1);
+					$direction = $this->minimumAltitude($minimum, $direction, Direction::W, $x, $y, -1, 0);
+					$direction = $this->minimumAltitude($minimum, $direction, Direction::NW, $x, $y, -1, 1);
 
 					$map[$y][$x][Map::POTENTIAL] = $map[$y][$x][Map::PRECIPITATION];
 					$map[$y][$x][Map::BOOL]      = 1;
@@ -95,20 +100,21 @@ trait WaterFlow
 							$temp = 27.0 - ($y - $equator) / $equator * 29.0;
 						}
 						if ($flow + $precipitation > (0.02616 * $temp * $temp + 0.2276 * $temp + 4.5227) / 3.0) {
-							$map[$y][$x][Map::VEGETATION] = Map::VEGETATION_LAKE;
+							$map[$y][$x][Map::VEGETATION] = Moisture::LAKE;
 						} else {
-							$map[$y][$x][Map::VEGETATION] = $precipitation < $config->fertile ? Map::VEGETATION_OASIS : Map::VEGETATION_MOOR;
+							$map[$y][$x][Map::VEGETATION] = $precipitation < $config->fertile ? Moisture::OASIS : Moisture::MOOR;
 						}
 					} else {
 						$altitude  = $map[$y][$x][Map::ALTITUDE];
 						$neighbour = $map[$y + $direction[1]][$x + $direction[0]][Map::ALTITUDE];
 						if ($flow / ($altitude - $neighbour) > $config->swamp) {
-							$map[$y][$x][Map::VEGETATION] = $precipitation < $config->fertile ? Map::VEGETATION_OASIS : Map::VEGETATION_MOOR;
+							$map[$y][$x][Map::VEGETATION] = $precipitation < $config->fertile ? Moisture::OASIS : Moisture::MOOR;
 						}
 					}
 				}
 			}
 		}
+		$config->status[__FUNCTION__] = true;
 	}
 
 	private function minimumAltitude(int &$minimum, array $old, array $new, int $x, int $y, int $dx, int $dy): array {

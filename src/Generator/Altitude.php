@@ -3,11 +3,11 @@ declare(strict_types = 1);
 namespace Lemuria\Tools\Lemuria\Generator;
 
 use function Lemuria\sign;
-
 use Lemuria\Tools\Lemuria\Map;
 use Lemuria\Tools\Lemuria\MapConfig;
+use Lemuria\Tools\Lemuria\Terrain;
 
-trait Terrain
+trait Altitude
 {
 	private MapConfig $config;
 
@@ -23,10 +23,10 @@ trait Terrain
 			for ($x = $minX; $x < $maxX; $x++) {
 				$altitude = $this->map[$y][$x][Map::ALTITUDE];
 				$this->map[$y][$x][Map::TYPE] = match (true) {
-					$altitude >= $this->config->mountain => Map::TERRAIN_MOUNTAIN,
-					$altitude >= $this->config->highland => Map::TERRAIN_HIGHLAND,
-					$altitude >= $this->config->lowLand  => Map::TERRAIN_PLAIN,
-					default                              => Map::TERRAIN_OCEAN
+					$altitude >= $this->config->mountain => Terrain::MOUNTAIN,
+					$altitude >= $this->config->highland => Terrain::HIGHLAND,
+					$altitude >= $this->config->lowLand  => Terrain::PLAIN,
+					default                              => Terrain::OCEAN
 				};
 			}
 		}
@@ -34,6 +34,9 @@ trait Terrain
 	}
 
 	private function calculateTerrain(MapConfig $config, array &$map): void {
+		if ($config->status[__FUNCTION__] ?? false) {
+			return;
+		}
 		$this->config = $config;
 		$this->map    =& $map;
 
@@ -139,6 +142,8 @@ trait Terrain
 				}
 			}
 		}
+
+		$config->status[__FUNCTION__] = true;
 	}
 
 	private function interpolate(int $sx, int $sy, int $dx, int $dy): void {

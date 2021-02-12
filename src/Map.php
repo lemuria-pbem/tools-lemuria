@@ -24,36 +24,6 @@ final class Map
 
 	public const VEGETATION = 8;
 
-	public const TERRAIN_OCEAN = 0;
-
-	public const TERRAIN_PLAIN = 1;
-
-	public const TERRAIN_HIGHLAND = 2;
-
-	public const TERRAIN_MOUNTAIN = 3;
-
-	public const DIRECTION_NONE = [];
-
-	public const DIRECTION_NE = [0, 1];
-
-	public const DIRECTION_E = [1, 0];
-
-	public const DIRECTION_SE = [1, -1];
-
-	public const DIRECTION_SW = [0, -1];
-
-	public const DIRECTION_W = [-1, 0];
-
-	public const DIRECTION_NW = [-1, 1];
-
-	public const VEGETATION_NONE = 4;
-
-	public const VEGETATION_LAKE = 5;
-
-	public const VEGETATION_MOOR = 6;
-
-	public const VEGETATION_OASIS = 7;
-
 	private int $width;
 
 	private int $height;

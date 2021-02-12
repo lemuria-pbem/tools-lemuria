@@ -5,9 +5,12 @@ namespace Lemuria\Tools\Lemuria\Generator;
 use Lemuria\Tools\Lemuria\Map;
 use Lemuria\Tools\Lemuria\MapConfig;
 
-trait Climate
+trait Precipitation
 {
 	private function calculateClimate(MapConfig $config, array &$map): void {
+		if ($config->status[__FUNCTION__] ?? false) {
+			return;
+		}
 		$this->config = $config;
 		$this->map    =& $map;
 		$minX         = $config->offsetX;
@@ -16,7 +19,6 @@ trait Climate
 		$maxY         = $config->maxY;
 		$equator      = $config->height / 2;
 		$moistEast    = 0.0;
-		$moist        = 0.0;
 
 		// Humidity and rainfall from east to west.
 		for ($y = $minY; $y < $maxY; $y++) {
@@ -74,5 +76,6 @@ trait Climate
 				}
 			}
 		}
+		$config->status[__FUNCTION__] = true;
 	}
 }

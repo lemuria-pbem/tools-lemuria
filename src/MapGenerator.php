@@ -4,17 +4,17 @@ namespace Lemuria\Tools\Lemuria;
 
 use JetBrains\PhpStorm\Pure;
 
-use Lemuria\Tools\Lemuria\Generator\Climate;
+use Lemuria\Tools\Lemuria\Generator\Precipitation;
 use Lemuria\Tools\Lemuria\Generator\Resources;
-use Lemuria\Tools\Lemuria\Generator\Terrain;
+use Lemuria\Tools\Lemuria\Generator\Altitude;
 use Lemuria\Tools\Lemuria\Generator\Vegetation;
 use Lemuria\Tools\Lemuria\Generator\WaterFlow;
 
 class MapGenerator
 {
-	use Climate;
+	use Altitude;
+	use Precipitation;
 	use Resources;
-	use Terrain;
 	use Vegetation;
 	use WaterFlow;
 
@@ -28,23 +28,20 @@ class MapGenerator
 
 	private array $region = [
 		Map::ALTITUDE      => MapConfig::OCEAN,
-		Map::TYPE          => 0,
+		Map::TYPE          => Terrain::OCEAN,
 		Map::MOISTURE      => 0.0,
 		Map::PRECIPITATION => 0.0,
 		Map::POTENTIAL     => 0.0,
 		Map::BOOL          => 0,
-		Map::DIRECTION     => Map::DIRECTION_NONE,
+		Map::DIRECTION     => Direction::NONE,
 		Map::FLOW          => 0.0,
-		Map::VEGETATION    => Map::VEGETATION_NONE
+		Map::VEGETATION    => Moisture::NONE
 	];
-
-	private MapConfig $config;
 
 	private array $map;
 
-	#[Pure] public function __construct() {
-		$this->config = new MapConfig();
-		$this->map    = array_fill(0, $this->config->height, array_fill(0, $this->config->width, $this->region));
+	#[Pure] public function __construct(private MapConfig $config) {
+		$this->map = array_fill(0, $this->config->height, array_fill(0, $this->config->width, $this->region));
 	}
 
 	public function run(): self {
@@ -55,5 +52,13 @@ class MapGenerator
 		$this->calculateResources($this->config, $this->map);
 
 		return $this;
+	}
+
+	public function load(array $map): void {
+		$this->map = $map;
+	}
+
+	public function save(): array {
+		return $this->map;
 	}
 }

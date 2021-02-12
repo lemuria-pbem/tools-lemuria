@@ -11,9 +11,13 @@ trait Resources
 	private array $map;
 
 	private function calculateResources(MapConfig $config, array &$map): void {
+		if ($config->status[__FUNCTION__] ?? false) {
+			return;
+		}
 		$this->config = $config;
 		$this->map    =& $map;
 
 		//TODO
+		$config->status[__FUNCTION__] = true;
 	}
 }
