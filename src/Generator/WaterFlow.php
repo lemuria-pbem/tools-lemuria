@@ -29,7 +29,6 @@ trait WaterFlow
 		$maxX = $this->config->maxX - $this->config->edge;
 		$minY = $this->config->offsetY + $this->config->edge;
 		$maxY = $this->config->maxY - $this->config->edge;
-		$equator      = $config->height / 2;
 
 		// Determine flow direction.
 		for ($y = $minY; $y < $maxY; $y++) {
@@ -51,9 +50,13 @@ trait WaterFlow
 		}
 
 		// Calculate flow from potentials.
-		for ($i = 0; $i < 30; $i++) {
+		for ($i = 0; $i < 100; $i++) {
+			$changes = 0; // 100 iterations max - if iteration finishes without changes, we stop before.
 			for ($y = $minY; $y < $maxY; $y++) {
 				for ($x = $minX; $x < $maxX; $x++) {
+					if (!$map[$y][$x][Map::BOOL]) {
+						continue;
+					}
 					$altitude = $map[$y][$x][Map::ALTITUDE];
 					if ($this->maximumAltitude($x, $y, 0, 1, $altitude)) {
 						continue;
@@ -81,12 +84,17 @@ trait WaterFlow
 					}
 					$map[$y][$x][Map::BOOL] = 0;
 					$map[$y][$x][Map::FLOW] = $potential;
+					$changes++;
 				}
+			}
+			if ($changes === 0) {
+				break;
 			}
 		}
 
 		// Create oases or swamps when slope is low and flow is great.
 		for ($y = $minY; $y < $maxY; $y++) {
+			$temp = $config->temperature()->forY($y);
 			for ($x = $minX; $x < $maxX; $x++) {
 				$flow = $map[$y][$x][Map::FLOW];
 				if ($flow > 0.0) {
@@ -94,12 +102,7 @@ trait WaterFlow
 					$precipitation = $map[$y][$x][Map::PRECIPITATION];
 
 					if (empty($direction)) {
-						if ($y < $equator) {
-							$temp = ($y / $equator) * 29.0 + 2.0;
-						} else {
-							$temp = 27.0 - ($y - $equator) / $equator * 29.0;
-						}
-						if ($flow + $precipitation > (0.02616 * $temp * $temp + 0.2276 * $temp + 4.5227) / 3.0) {
+						if ($flow + $precipitation > $config->temperature()->toMoist($temp) / 3.0) {
 							$map[$y][$x][Map::VEGETATION] = Moisture::LAKE;
 						} else {
 							$map[$y][$x][Map::VEGETATION] = $precipitation < $config->fertile ? Moisture::OASIS : Moisture::MOOR;
@@ -127,8 +130,8 @@ trait WaterFlow
 	}
 
 	private function maximumAltitude(int $x, int $y, int $dx, int $dy, int $altitude): bool {
-		$x   += $dx;
-		$y   += $dy;
+		$x += $dx;
+		$y += $dy;
 		if ($this->map[$y][$x][Map::BOOL] && $this->map[$y][$x][Map::ALTITUDE] > $altitude) {
 			return true;
 		}

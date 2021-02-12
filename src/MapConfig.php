@@ -99,7 +99,7 @@ final class MapConfig
 	 */
 	public int $mountain = 700;
 
-	public float $heTemp = 1.0;
+	public float $hTemp = 1.0;
 
 	public float $desert = 0.0;
 
@@ -121,16 +121,26 @@ final class MapConfig
 
 	public array $status = [];
 
+	private static ?Temperature $temperature = null;
+
+	public function temperature(): Temperature {
+		if (!self::$temperature) {
+			self::$temperature = new Temperature($this);
+		}
+		return self::$temperature;
+	}
+
 	public function load(array $config): void {
 		foreach ($config as $name => $value) {
 			$this->$name = $value;
 		}
+		self::$temperature = null;
 	}
 
 	public function save(): array {
 		$data       = [];
 		$reflection = new \ReflectionClass($this);
-		foreach ($reflection->getProperties() as $property) {
+		foreach ($reflection->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
 			$name        = $property->name;
 			$data[$name] = $this->$name;
 		}

@@ -17,29 +17,23 @@ trait Precipitation
 		$maxX         = $config->maxX - 1;
 		$minY         = $config->offsetY;
 		$maxY         = $config->maxY;
-		$equator      = $config->height / 2;
 		$moistEast    = 0.0;
 
 		// Humidity and rainfall from east to west.
 		for ($y = $minY; $y < $maxY; $y++) {
+			$temp = $config->temperature()->forY($y);
 			for ($x = $maxX; $x >= $minX; $x--) {
-				if ($y < $equator) {
-					$temp = ($y / $equator) * 29.0 - 2.0;
-				} else {
-					$temp = 27.0 - ($y - $equator) / $equator * 29.0;
-				}
-				$temp2 = $temp * $temp;
-
 				if ($x === $maxX) {
 					// Moisture absorption above ocean is 1/3.
-					$moist = (0.02616 * $temp2 + 0.2276 * $temp + 4.5227) / 3.0;
+					$moist = $config->temperature()->toMoist($temp) / 3.0;
 				} else {
 					$altitude = $map[$y][$x][Map::ALTITUDE];
 					if ($altitude <= 0) {
-						if ($moistEast + (0.02616 * $temp2 + 0.2276 * $temp + 4.5227) / 3.0 >= 0.02616 * $temp2 + 0.2276 * $temp + 4.5227) {
-							$moist = 0.02616 * $temp2 + 0.2276 * $temp + 4.5227;
+						$mForTemp = $config->temperature()->toMoist($temp);
+						if ($moistEast + $mForTemp / 3.0 >= $mForTemp) {
+							$moist = $mForTemp;
 						} else {
-							$moist = $moistEast + (0.02616 * $temp2 + 0.2276 * $temp + 4.5227) / 3.0;
+							$moist = $moistEast + $mForTemp / 3.0;
 						}
 					} else {
 						$precip = (0.1 + $altitude / 3000) * $moistEast;
