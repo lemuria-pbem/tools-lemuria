@@ -39,8 +39,11 @@ class MapRenderer implements \Stringable
 			self::printTabbed('<div>' . $y . '</div>', 2);
 			for ($x = 0; $x < $this->width; $x++) {
 				$this->map->setX($x);
-				$class = $this->getRegion();
-				$title = '(' . $x . '/' . $y . ') ' . $this->map->Altitude() . 'm';
+				$type   = $this->map->Type();
+				$temp   = $this->map->Temperature();
+				$precip = $this->map->Precipitation();
+				$class  = $this->getRegion();
+				$title  = $type . ': (' . $x . '/' . $y . ') ' . $this->map->Altitude() . 'm / ' . $temp . '°C / ' . $precip;
 				echo '<div class="' . $class . '" title="' . $title . '">&nbsp;</div>';
 			}
 			self::printLine('<div>' . $y . '</div>');

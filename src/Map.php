@@ -22,7 +22,9 @@ final class Map
 
 	public const FLOW = 7;
 
-	public const VEGETATION = 8;
+	public const WATER = 8;
+
+	public const VEGETATION = 9;
 
 	private int $width;
 
@@ -32,7 +34,7 @@ final class Map
 
 	private int $y = 0;
 
-	#[Pure] public function __construct(private array $map, private int $type) {
+	#[Pure] public function __construct(private MapConfig $config, private array $map, private int $type) {
 		$this->width  = count($map[0]);
 		$this->height = count($map);
 	}
@@ -47,6 +49,14 @@ final class Map
 
 	public function Altitude(): int {
 		return $this->map[$this->y][$this->x][self::ALTITUDE];
+	}
+
+	public function Temperature(): float {
+		return $this->config->temperature()->forAltitude($this->y, $this->Altitude());
+	}
+
+	public function Precipitation(): float {
+		return $this->map[$this->y][$this->x][self::PRECIPITATION];
 	}
 
 	public function Type(): int {

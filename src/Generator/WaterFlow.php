@@ -14,7 +14,7 @@ trait WaterFlow
 	private MapConfig $config;
 
 	#[Pure] public function getPrecipitationMap(): Map {
-		return new Map($this->map, Map::VEGETATION);
+		return new Map($this->config, $this->map, Map::WATER);
 	}
 
 	private array $map;
@@ -103,15 +103,15 @@ trait WaterFlow
 
 					if (empty($direction)) {
 						if ($flow + $precipitation > $config->temperature()->toMoist($temp) / 3.0) {
-							$map[$y][$x][Map::VEGETATION] = Moisture::LAKE;
+							$map[$y][$x][Map::WATER] = Moisture::LAKE;
 						} else {
-							$map[$y][$x][Map::VEGETATION] = $precipitation < $config->fertile ? Moisture::OASIS : Moisture::MOOR;
+							$map[$y][$x][Map::WATER] = $precipitation < $config->fertile ? Moisture::OASIS : Moisture::MOOR;
 						}
 					} else {
 						$altitude  = $map[$y][$x][Map::ALTITUDE];
 						$neighbour = $map[$y + $direction[1]][$x + $direction[0]][Map::ALTITUDE];
 						if ($flow / ($altitude - $neighbour) > $config->swamp) {
-							$map[$y][$x][Map::VEGETATION] = $precipitation < $config->fertile ? Moisture::OASIS : Moisture::MOOR;
+							$map[$y][$x][Map::WATER] = $precipitation < $config->fertile ? Moisture::OASIS : Moisture::MOOR;
 						}
 					}
 				}

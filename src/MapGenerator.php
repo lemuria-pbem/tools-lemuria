@@ -35,7 +35,8 @@ class MapGenerator
 		Map::BOOL          => 0,
 		Map::DIRECTION     => Direction::NONE,
 		Map::FLOW          => 0.0,
-		Map::VEGETATION    => Moisture::NONE
+		Map::WATER         => Moisture::NONE,
+		Map::VEGETATION    => Terrain::OCEAN
 	];
 
 	private array $map;

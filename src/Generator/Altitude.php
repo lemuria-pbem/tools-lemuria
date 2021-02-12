@@ -30,7 +30,7 @@ trait Altitude
 				};
 			}
 		}
-		return new Map($this->map, Map::TYPE);
+		return new Map($this->config, $this->map, Map::TYPE);
 	}
 
 	private function calculateTerrain(MapConfig $config, array &$map): void {
