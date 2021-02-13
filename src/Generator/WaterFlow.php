@@ -4,10 +4,12 @@ namespace Lemuria\Tools\Lemuria\Generator;
 
 use JetBrains\PhpStorm\Pure;
 
+use Lemuria\Tools\Lemuria\Area;
 use Lemuria\Tools\Lemuria\Direction;
 use Lemuria\Tools\Lemuria\Map;
 use Lemuria\Tools\Lemuria\MapConfig;
 use Lemuria\Tools\Lemuria\Moisture;
+use Lemuria\Tools\Lemuria\Terrain;
 
 trait WaterFlow
 {
@@ -96,11 +98,10 @@ trait WaterFlow
 		for ($y = $minY; $y < $maxY; $y++) {
 			$temp = $config->temperature()->forY($y);
 			for ($x = $minX; $x < $maxX; $x++) {
-				$flow = $map[$y][$x][Map::FLOW];
+				$precipitation = $map[$y][$x][Map::PRECIPITATION];
+				$flow          = $map[$y][$x][Map::FLOW];
 				if ($flow > 0.0) {
-					$direction     = $map[$y][$x][Map::DIRECTION];
-					$precipitation = $map[$y][$x][Map::PRECIPITATION];
-
+					$direction = $map[$y][$x][Map::DIRECTION];
 					if (empty($direction)) {
 						if ($flow + $precipitation > $config->temperature()->toMoist($temp) / 3.0) {
 							$map[$y][$x][Map::WATER] = Moisture::LAKE;
@@ -112,8 +113,12 @@ trait WaterFlow
 						$neighbour = $map[$y + $direction[1]][$x + $direction[0]][Map::ALTITUDE];
 						if ($flow / ($altitude - $neighbour) > $config->swamp) {
 							$map[$y][$x][Map::WATER] = $precipitation < $config->fertile ? Moisture::OASIS : Moisture::MOOR;
+						} else {
+							$map[$y][$x][Map::WATER] = $this->getWater($precipitation);
 						}
 					}
+				} else {
+					$map[$y][$x][Map::WATER] = $this->getWater($precipitation);
 				}
 			}
 		}
@@ -136,5 +141,15 @@ trait WaterFlow
 			return true;
 		}
 		return false;
+	}
+
+	private function getWater(float $precipitation): int {
+		return match (true) {
+			$precipitation >= $this->config->moist => Area::HIGH_FOREST,
+			$precipitation >= $this->config->humid => Area::RAIN_FOREST,
+			$precipitation >= $this->config->fertile => Terrain::PLAIN,
+			$precipitation > $this->config->desert => Area::DESERT,
+			default => Moisture::NONE
+		};
 	}
 }
