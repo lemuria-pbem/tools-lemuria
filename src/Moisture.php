@@ -4,11 +4,11 @@ namespace Lemuria\Tools\Lemuria;
 
 final class Moisture
 {
-	public const NONE = 5;
+	public const NONE = 4;
 
-	public const LAKE = 6;
+	public const LAKE = 5;
 
-	public const MOOR = 7;
+	public const MOOR = 6;
 
-	public const OASIS = 8;
+	public const OASIS = 7;
 }

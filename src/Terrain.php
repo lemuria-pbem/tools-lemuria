@@ -8,9 +8,7 @@ final class Terrain
 
 	public const PLAIN = 1;
 
-	public const HILL = 2;
+	public const HIGHLAND = 2;
 
-	public const HIGHLAND = 3;
-
-	public const MOUNTAIN = 4;
+	public const MOUNTAIN = 3;
 }

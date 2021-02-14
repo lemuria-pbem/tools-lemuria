@@ -56,7 +56,7 @@ trait Vegetation
 						} elseif ($altitude < $config->mountain) {
 							$vegetation = match (true) {
 								$precipitation < $config->fertile => Area::HIGH_DESERT,
-								$precipitation < $config->humid   => Terrain::PLAIN,
+								$precipitation < $config->humid   => Terrain::HIGHLAND,
 								default                           => Area::HIGH_FOREST
 							};
 						} else {
