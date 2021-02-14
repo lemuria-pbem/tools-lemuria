@@ -4,15 +4,17 @@ namespace Lemuria\Tools\Lemuria;
 
 use JetBrains\PhpStorm\Pure;
 
+use Lemuria\Tools\Lemuria\Generator\Altitude;
+use Lemuria\Tools\Lemuria\Generator\Fertility;
 use Lemuria\Tools\Lemuria\Generator\Precipitation;
 use Lemuria\Tools\Lemuria\Generator\Resources;
-use Lemuria\Tools\Lemuria\Generator\Altitude;
 use Lemuria\Tools\Lemuria\Generator\Vegetation;
 use Lemuria\Tools\Lemuria\Generator\WaterFlow;
 
 class MapGenerator
 {
 	use Altitude;
+	use Fertility;
 	use Precipitation;
 	use Resources;
 	use Vegetation;
@@ -36,7 +38,11 @@ class MapGenerator
 		Map::DIRECTION     => Direction::NONE,
 		Map::FLOW          => 0.0,
 		Map::WATER         => Moisture::NONE,
-		Map::VEGETATION    => Terrain::OCEAN
+		Map::VEGETATION    => Terrain::OCEAN,
+		Map::FERTILITY     => 0.0,
+		Map::ARABLE        => 0.0,
+		Map::LAND          => null,
+		Map::GOOD          => null
 	];
 
 	private array $map;
@@ -50,13 +56,27 @@ class MapGenerator
 		$this->calculateClimate($this->config, $this->map);
 		$this->calculateWaterFlow($this->config, $this->map);
 		$this->calculateVegetation($this->config, $this->map);
+		$this->calculateFertility($this->config, $this->map);
 		$this->calculateResources($this->config, $this->map);
 
 		return $this;
 	}
 
 	public function load(array $map): void {
-		$this->map = $map;
+		if (count($map) === $this->config->height) {
+			foreach ($map as $y => $row) {
+				if (count($row) === $this->config->width) {
+					foreach ($row as $x => $values) {
+						if (isset($this->map[$y][$x]) && isset($values[Map::ALTITUDE])) {
+							$altitude = $values[Map::ALTITUDE];
+							if (is_int($altitude)) {
+								$this->map[$y][$x][Map::ALTITUDE] = $altitude;
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
 	public function save(): array {

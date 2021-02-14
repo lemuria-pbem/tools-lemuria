@@ -26,6 +26,14 @@ final class Map
 
 	public const VEGETATION = 9;
 
+	public const FERTILITY = 10;
+
+	public const ARABLE = 11;
+
+	public const LAND = 12;
+
+	public const GOOD = 13;
+
 	private int $width;
 
 	private int $height;

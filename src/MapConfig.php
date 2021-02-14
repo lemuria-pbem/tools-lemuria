@@ -99,26 +99,59 @@ final class MapConfig
 	 */
 	public int $mountain = 700;
 
+	/**
+	 * Temperature decrease per 100 meters.
+	 */
 	public float $hTemp = 1.0;
 
+	/**
+	 * Minimum precipitation of a desert.
+	 */
 	public float $desert = 0.0;
 
+	/**
+	 * Minimum precipitation of fertile land.
+	 */
 	public float $fertile = 0.4;
 
+	/**
+	 * Minimum precipitation of tropical region.
+	 */
 	public float $humid = 5.0;
 
+	/**
+	 * Minimum precipitation of very moist rain forest.
+	 */
 	public float $moist = 8.0;
 
+	/**
+	 * Minimum flow-per-slope ratio of a swamp/oasis region.
+	 */
 	public float $swamp = 0.07;
 
-	public int $square = 38191;
+	/**
+	 * Absolute area of a region in square kilometers.
+	 */
+	public int $square = 6000;
 
-	public float $farming = 3.33;
+	/**
+	 * Area per person for farming.
+	 */
+	public float $farming = 3.0;
 
+	/**
+	 * Area per person for breeding.
+	 */
 	public float $breeding = 15.0;
 
+	/**
+	 * Area per person for hunting.
+	 */
 	public float $hunting = 45.0;
 
+	/**
+	 * Calculation status.
+	 */
 	public array $status = [];
 
 	private static ?Temperature $temperature = null;

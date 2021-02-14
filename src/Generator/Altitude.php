@@ -56,11 +56,11 @@ trait Altitude
 
 		// Calculate random seeds.
 		for ($i = 0; $i < $config->seeds; $i++) {
-			$x                             = rand($minX, $maxX);
-			$y                             = rand($minY, $maxY);
-			$altitude                      = rand($config->minHeight, $config->maxHeight);
-			$seedX[$i]                        = $x;
-			$seedY[$i]                        = $y;
+			$x                          = rand($minX, $maxX);
+			$y                          = rand($minY, $maxY);
+			$altitude                   = rand($config->minHeight, $config->maxHeight);
+			$seedX[$i]                  = $x;
+			$seedY[$i]                  = $y;
 			$map[$y][$x][Map::ALTITUDE] = $altitude;
 		}
 
@@ -171,6 +171,9 @@ trait Altitude
 			}
 		}
 		$altitude = $altitude + rand($this->config->minDiff, $this->config->maxDiff) - $altDelta;
+		if ($altitude > $this->config->maxHeight) {
+			$altitude = $this->config->maxHeight;
+		}
 
 		$this->map[$y][$x][Map::ALTITUDE] = $altitude;
 	}
@@ -199,6 +202,9 @@ trait Altitude
 		$altitude = $this->map[$y + $y1][$x + $x1][Map::ALTITUDE] + $this->map[$y + $y2][$x + $x2][Map::ALTITUDE]
 					+ $this->map[$y + $y3][$x + $x3][Map::ALTITUDE] + $this->map[$y + $y4][$x + $x4][Map::ALTITUDE];
 		$altitude = (int)round(($altitude + $altDelta) / $count) + rand($this->config->minDiff, $this->config->maxDiff);
+		if ($altitude > $this->config->maxHeight) {
+			$altitude = $this->config->maxHeight;
+		}
 
 		$this->map[$y][$x][Map::ALTITUDE] = $altitude;
 	}
