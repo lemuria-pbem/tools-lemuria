@@ -41,7 +41,7 @@ trait Vegetation
 					};
 				} else {
 					$water = $map[$y][$x][Map::WATER];
-					if ($water > Moisture::NONE) {
+					if ($water > Moisture::NONE && $water <= Moisture::OASIS) {
 						$vegetation = $water;
 					} else {
 						$precipitation = $map[$y][$x][Map::PRECIPITATION];

@@ -63,7 +63,7 @@ trait Fertility
 		for ($y = $minY; $y < $maxY; $y++) {
 			for ($x = $minX; $x < $maxX; $x++) {
 				$altitude  = $map[$y][$x][Map::ALTITUDE];
-				$land      = [Land::WATER => 0.0, Land::FIELD => 0.0, Land::PASTURE => 0.0, Land::FOREST => 0.0, Land::BUSH => 0.0];
+				$land      = [Land::WATER => 0, Land::FIELD => 0, Land::PASTURE => 0, Land::FOREST => 0, Land::BUSH => 0];
 
 				// Calculate water area.
 				$vegetation = $map[$y][$x][Map::VEGETATION];
@@ -87,13 +87,13 @@ trait Fertility
 						$waterArea += 10; // additional water in oases
 					}
 				}
-				$water             = $waterArea / 100 * $this->config->square;
+				$water             = (int)round($waterArea / 100 * $this->config->square);
 				$land[Land::WATER] = $water;
 
 				// Calculate fertility.
 				if ($vegetation === Terrain::OCEAN) {
 					// in oceans fertility depends on water depth
-					$fertility = -0.000000781 * ($altitude * $altitude) + 0.25;
+					$fertility = 0.25 - 0.000000781 * $altitude * $altitude;
 				} else {
 					$precipitation = $map[$y][$x][Map::PRECIPITATION];
 					$temperature   = $config->temperature()->forAltitude($y, $altitude);
@@ -116,12 +116,12 @@ trait Fertility
 
 				// Calculation of arable land..
 				if ($vegetation === Terrain::OCEAN || $vegetation === Area::ICE || $vegetation === Area::GLACIER) {
-					$arable = 0.0;
+					$arable = 0;
 				} else {
-					$arable = ($config->square - $water) * sqrt(($config->maxHeight - $altitude) / $config->maxHeight);
+					$arable = (int)round(($config->square - $water) * sqrt(($config->maxHeight - $altitude) / $config->maxHeight));
 				}
 				$remaining = $arable;
-				$unusable  = $this->config->square - $arable;
+				$unusable  = $this->config->square - $water - $arable;
 
 				// Calculation of land distribution.
 				if ($vegetation === Area::RAIN_FOREST || $vegetation === Area::HIGH_FOREST || $vegetation === Area::RAIN_MOUNTAIN) {
@@ -129,11 +129,11 @@ trait Fertility
 				} else {
 					$forest = ($altitude / $config->maxHeight * 100.0 - 5.0) * (rand(0, 100) / 100) + 5.0;
 				}
-				$forest            *= $arable / 100.0;
+				$forest             = (int)round($forest * $arable / 100.0);
 				$remaining         -= $forest;
 				$land[Land::FOREST] = $forest;
 
-				$pasture             = $remaining * rand(0, 100) / 100.0;
+				$pasture             = (int)round($remaining * rand(0, 100) / 100.0);
 				$remaining          -= $pasture;
 				$land[Land::PASTURE] = $pasture;
 
@@ -144,6 +144,7 @@ trait Fertility
 						$field = $desertField;
 					}
 				}
+    			$field             = (int)round($field);
     			$land[Land::FIELD] = $field;
 
 				$bush             = $remaining - $field;
