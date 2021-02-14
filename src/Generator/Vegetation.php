@@ -72,8 +72,6 @@ trait Vegetation
 			}
 		}
 
-		//TODO
-
 		$config->status[__FUNCTION__] = true;
 	}
 }
