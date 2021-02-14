@@ -121,7 +121,6 @@ trait Fertility
 					$arable = (int)round(($config->square - $water) * sqrt(($config->maxHeight - $altitude) / $config->maxHeight));
 				}
 				$remaining = $arable;
-				$unusable  = $this->config->square - $water - $arable;
 
 				// Calculation of land distribution.
 				if ($vegetation === Area::RAIN_FOREST || $vegetation === Area::HIGH_FOREST || $vegetation === Area::RAIN_MOUNTAIN) {
