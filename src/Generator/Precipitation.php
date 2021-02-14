@@ -22,6 +22,7 @@ trait Precipitation
 		for ($y = $minY; $y < $maxY; $y++) {
 			$temp       = $config->temperature()->forY($y);
 			$moistOcean = $config->temperature()->toMoist($temp) / 3.0; // 1/3 moisture absorption above ocean
+
 			$map[$y][$minX][Map::MOISTURE] = $moistOcean;
 			$map[$y][$maxX][Map::MOISTURE] = $moistOcean;
 
@@ -29,6 +30,7 @@ trait Precipitation
 			for ($x = $minX + 1; $x <= $maxX; $x++) {
 				$moistBefore = $this->precipitation($x, $y, $temp, $moistBefore);
 			}
+
 			$moistBefore = $moistOcean;
 			for ($x = $maxX - 1; $x >= $minX; $x--) {
 				$moistBefore = $this->precipitation($x, $y, $temp, $moistBefore);
@@ -75,7 +77,7 @@ trait Precipitation
 
 			$this->map[$y][$x][Map::PRECIPITATION] += $precip;
 		}
-		$this->map[$y][$x][Map::MOISTURE] = $moist;
+		$this->map[$y][$x][Map::MOISTURE] += $moist;
 		return $moist;
 	}
 }

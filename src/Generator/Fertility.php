@@ -148,9 +148,7 @@ trait Fertility
     			$land[Land::FIELD] = $field;
 
 				$bush             = $remaining - $field;
-				$land[Land::BUSH] = $remaining;
-
-				$control = $this->config->square - $water - $forest - $field - $pasture - $bush;
+				$land[Land::BUSH] = $bush;
 
 				// Calculation of fish.
 				$fish = (int)round($water * $fertility / $config->hunting * 100.0);
