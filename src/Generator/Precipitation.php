@@ -20,56 +20,18 @@ trait Precipitation
 
 		// Humidity and rainfall from east and west.
 		for ($y = $minY; $y < $maxY; $y++) {
-			$temp = $config->temperature()->forY($y);
+			$temp       = $config->temperature()->forY($y);
+			$moistOcean = $config->temperature()->toMoist($temp) / 3.0; // 1/3 moisture absorption above ocean
+			$map[$y][$minX][Map::MOISTURE] = $moistOcean;
+			$map[$y][$maxX][Map::MOISTURE] = $moistOcean;
 
-			$moistWest = 0.0;
-			for ($x = $minX; $x <= $maxX; $x++) {
-				if ($x === $minX) {
-					// Moisture absorption above ocean is 1/3.
-					$moist = $config->temperature()->toMoist($temp) / 3.0;
-				} else {
-					$altitude = $map[$y][$x][Map::ALTITUDE];
-					if ($altitude <= 0) {
-						$mForTemp = $config->temperature()->toMoist($temp);
-						if ($moistWest + $mForTemp / 3.0 >= $mForTemp) {
-							$moist = $mForTemp;
-						} else {
-							$moist = $moistWest + $mForTemp / 3.0;
-						}
-					} else {
-						$precip = (0.1 + $altitude / 3000) * $moistWest;
-						$moist  = $moistWest - $precip;
-
-						$map[$y][$x][Map::PRECIPITATION] += $precip;
-					}
-				}
-				$map[$y][$x][Map::MOISTURE] = $moist;
-				$moistWest                  = $moist;
+			$moistBefore = $moistOcean;
+			for ($x = $minX + 1; $x <= $maxX; $x++) {
+				$moistBefore = $this->precipitation($x, $y, $temp, $moistBefore);
 			}
-
-			$moistEast = 0.0;
-			for ($x = $maxX; $x >= $minX; $x--) {
-				if ($x === $maxX) {
-					// Moisture absorption above ocean is 1/3.
-					$moist = $config->temperature()->toMoist($temp) / 3.0;
-				} else {
-					$altitude = $map[$y][$x][Map::ALTITUDE];
-					if ($altitude <= 0) {
-						$mForTemp = $config->temperature()->toMoist($temp);
-						if ($moistEast + $mForTemp / 3.0 >= $mForTemp) {
-							$moist = $mForTemp;
-						} else {
-							$moist = $moistEast + $mForTemp / 3.0;
-						}
-					} else {
-						$precip = (0.1 + $altitude / 3000) * $moistEast;
-						$moist  = $moistEast - $precip;
-
-						$map[$y][$x][Map::PRECIPITATION] += $precip;
-					}
-				}
-				$map[$y][$x][Map::MOISTURE] = $moist;
-				$moistEast                  = $moist;
+			$moistBefore = $moistOcean;
+			for ($x = $maxX - 1; $x >= $minX; $x--) {
+				$moistBefore = $this->precipitation($x, $y, $temp, $moistBefore);
 			}
 		}
 
@@ -96,5 +58,24 @@ trait Precipitation
 			}
 		}
 		$config->status[__FUNCTION__] = true;
+	}
+
+	private function precipitation(int $x, int $y, float $temp, float $moistBefore): float {
+		$altitude = $this->map[$y][$x][Map::ALTITUDE];
+		if ($altitude <= 0) {
+			$mForTemp = $this->config->temperature()->toMoist($temp);
+			if ($moistBefore + $mForTemp / 3.0 >= $mForTemp) {
+				$moist = $mForTemp;
+			} else {
+				$moist = $moistBefore + $mForTemp / 3.0;
+			}
+		} else {
+			$precip = (0.1 + $altitude / 3000) * $moistBefore;
+			$moist  = $moistBefore - $precip;
+
+			$this->map[$y][$x][Map::PRECIPITATION] += $precip;
+		}
+		$this->map[$y][$x][Map::MOISTURE] = $moist;
+		return $moist;
 	}
 }

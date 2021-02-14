@@ -111,7 +111,8 @@ trait WaterFlow
 					} else {
 						$altitude  = $map[$y][$x][Map::ALTITUDE];
 						$neighbour = $map[$y + $direction[1]][$x + $direction[0]][Map::ALTITUDE];
-						if ($flow / ($altitude - $neighbour) > $config->swamp) {
+						$slope     = abs($altitude - $neighbour);
+						if ($slope === 0 || $flow / $slope > $config->swamp) {
 							$map[$y][$x][Map::WATER] = $precipitation < $config->fertile ? Moisture::OASIS : Moisture::MOOR;
 						} else {
 							$map[$y][$x][Map::WATER] = $this->getWater($precipitation);
