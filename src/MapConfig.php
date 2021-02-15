@@ -20,6 +20,31 @@ final class MapConfig
 	public const OCEAN = self::ZERO + 100;
 
 	/**
+	 * Average deposit in center.
+	 */
+	public const DEPOSIT_SIZE = 0;
+
+	/**
+	 * Number of deposits.
+	 */
+	public const DEPOSIT_COUNT = 1;
+
+	/**
+	 * Average depth.
+	 */
+	public const DEPOSIT_DEPTH = 2;
+
+	/**
+	 * Depth spread (levels).
+	 */
+	public const DEPOSIT_SPREAD = 3;
+
+	/**
+	 * Deposit a-value for Gauss.
+	 */
+	public const DEPOSIT_A = 4;
+
+	/**
 	 * Start of land mass in the west.
 	 */
 	public int $offsetX = 0;
@@ -148,6 +173,33 @@ final class MapConfig
 	 * Area per person for hunting.
 	 */
 	public float $hunting = 45.0;
+
+	/**
+	 * Area per tree for forestry.
+	 */
+	public float $forestry = 100.0;
+
+	/*
+	 * Definition of mineral resources.
+	 */
+	public array $resource = [
+		Good::STONE => [
+			self::DEPOSIT_SIZE  => 10000, self::DEPOSIT_COUNT => 30,
+			self::DEPOSIT_DEPTH => 0, self::DEPOSIT_SPREAD => 10, self::DEPOSIT_A => 5
+		],
+		Good::QUARTZ => [
+			self::DEPOSIT_SIZE  => 450, self::DEPOSIT_COUNT => 5,
+			self::DEPOSIT_DEPTH => 4, self::DEPOSIT_SPREAD => 2, self::DEPOSIT_A => 3
+		],
+		Good::IRON => [
+			self::DEPOSIT_SIZE  => 10000, self::DEPOSIT_COUNT => 30,
+			self::DEPOSIT_DEPTH => 0, self::DEPOSIT_SPREAD => 10, self::DEPOSIT_A => 5
+		],
+		Good::MITHRIL => [
+			self::DEPOSIT_SIZE  => 2500, self::DEPOSIT_COUNT => 5,
+			self::DEPOSIT_DEPTH => 7, self::DEPOSIT_SPREAD => 2, self::DEPOSIT_A => 3
+		]
+	];
 
 	/**
 	 * Calculation status.

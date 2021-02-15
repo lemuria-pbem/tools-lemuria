@@ -149,9 +149,13 @@ trait Fertility
 				$bush             = $remaining - $field;
 				$land[Land::BUSH] = $bush;
 
-				// Calculation of fish.
+				// Calculation of goods.
 				$fish = (int)round($water * $fertility / $config->hunting * 100.0);
-				$good = [Good::FISH => $fish];
+				$crop = (int)round($field * $fertility / $config->farming * 100.0);
+				$meat = (int)round($pasture * $fertility / $config->breeding * 100.0);
+				$game = (int)round($bush * $fertility / $config->hunting * 100.0);
+				$wood = (int)round($forest * $fertility / $config->forestry * 100.0);
+				$good = [Good::FISH => $fish, Good::CROP => $crop, Good::MEAT => $meat, Good::GAME => $game, Good::WOOD => $wood];
 
 				$map[$y][$x][Map::FERTILITY] = $fertility;
 				$map[$y][$x][Map::ARABLE]    = $arable;
