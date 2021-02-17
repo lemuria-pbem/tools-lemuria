@@ -42,7 +42,8 @@ class MapGenerator
 		Map::FERTILITY     => 0.0,
 		Map::ARABLE        => 0.0,
 		Map::LAND          => null,
-		Map::GOOD          => null
+		Map::GOOD          => null,
+		Map::RESOURCE      => []
 	];
 
 	private array $map;

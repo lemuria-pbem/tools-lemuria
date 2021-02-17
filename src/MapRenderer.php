@@ -16,11 +16,11 @@ class MapRenderer implements \Stringable
 
 	public static int $tabs = self::TABS;
 
-	private int $width;
+	protected int $width;
 
-	private int $height;
+	protected int $height;
 
-	#[Pure] public function __construct(private Map $map) {
+	#[Pure] public function __construct(protected Map $map) {
 		$this->width  = $map->Width();
 		$this->height = $map->Height();
 	}

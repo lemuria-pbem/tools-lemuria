@@ -34,6 +34,8 @@ final class Map
 
 	public const GOOD = 13;
 
+	public const RESOURCE = 14;
+
 	private int $width;
 
 	private int $height;
@@ -41,6 +43,8 @@ final class Map
 	private int $x = 0;
 
 	private int $y = 0;
+
+	private string $resource = '';
 
 	#[Pure] public function __construct(private MapConfig $config, private array $map, private int $type) {
 		$this->width  = count($map[0]);
@@ -71,6 +75,10 @@ final class Map
 		return $this->map[$this->y][$this->x][$this->type];
 	}
 
+	public function Resource(): array {
+		return $this->map[$this->y][$this->x][self::RESOURCE][$this->resource];
+	}
+
 	public function setX(int $x): self {
 		$this->x = $x;
 		return $this;
@@ -83,5 +91,10 @@ final class Map
 
 	public function to(int $x, int $y): self {
 		return $this->setX($x)->setY($y);
+	}
+
+	public function setResource(string $resource): self {
+		$this->resource = $resource;
+		return $this;
 	}
 }

@@ -27,6 +27,11 @@ trait Resources
 
 	private array $gauss = [];
 
+	public function getResource(string $resource): Map {
+		$map = new Map($this->config, $this->map, Map::RESOURCE);
+		return $map->setResource($resource);
+	}
+
 	private function calculateResources(MapConfig $config, array &$map): void {
 		if ($config->status[__FUNCTION__] ?? false) {
 			return;
@@ -52,7 +57,7 @@ trait Resources
 			$maxZ      = $depthMax < $maxHeight? $maxHeight - $depth0 : $depthMax - $depth0;
 
 			// Deposit cores.
-			$deposit = array_fill(0, $config->height, array_fill(0, $config->width, array_fill(0, $maxZ, 0)));
+			$deposit = array_fill(0, $config->height, array_fill(0, $config->width, array_fill(1, $maxZ, 0)));
 			for ($i = 0; $i < $resource[MapConfig::DEPOSIT_COUNT]; $i++) {
 				$x = rand($minX, $maxX);
 				$y = rand($minY, $maxY);
@@ -90,10 +95,10 @@ trait Resources
 			}
 
 			// Adapt to terrain.
-			$talentDeposit = array_fill(0, $config->height, array_fill(0, $config->width, array_fill(0, $maxZ, 0)));
-			for ($y = $minY; $y <= $maxY; $y++) {
-				for ($x = $minX; $x <= $maxX; $x++) {
-					for ($z = 0; $z <= $maxZ; $z++) {
+			$talentDeposit = array_fill(0, $config->height, array_fill(0, $config->width, array_fill(1, $maxZ, 0)));
+			for ($y = $config->offsetY; $y < $config->maxX; $y++) {
+				for ($x = $config->offsetX; $x < $config->maxY; $x++) {
+					for ($z = 1; $z <= $maxZ; $z++) {
 						$amount   = $deposit[$y][$x][$z];
 						$altitude = $map[$y][$x][Map::ALTITUDE];
 						if ($altitude >= $config->mountain) {
@@ -125,6 +130,7 @@ trait Resources
 							}
 						}
 					}
+					$map[$y][$x][Map::RESOURCE][$name] = $talentDeposit[$y][$x];
 				}
 			}
 		}

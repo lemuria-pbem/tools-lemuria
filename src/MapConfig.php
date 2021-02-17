@@ -184,19 +184,19 @@ final class MapConfig
 	 */
 	public array $resource = [
 		Good::STONE => [
-			self::DEPOSIT_SIZE  => 10000, self::DEPOSIT_COUNT => 30,
+			self::DEPOSIT_SIZE  => 10000, self::DEPOSIT_COUNT => 5,
 			self::DEPOSIT_DEPTH => 0, self::DEPOSIT_SPREAD => 10, self::DEPOSIT_A => 5
 		],
 		Good::QUARTZ => [
-			self::DEPOSIT_SIZE  => 450, self::DEPOSIT_COUNT => 5,
+			self::DEPOSIT_SIZE  => 450, self::DEPOSIT_COUNT => 1,
 			self::DEPOSIT_DEPTH => 4, self::DEPOSIT_SPREAD => 2, self::DEPOSIT_A => 3
 		],
 		Good::IRON => [
-			self::DEPOSIT_SIZE  => 10000, self::DEPOSIT_COUNT => 30,
+			self::DEPOSIT_SIZE  => 10000, self::DEPOSIT_COUNT => 5,
 			self::DEPOSIT_DEPTH => 0, self::DEPOSIT_SPREAD => 10, self::DEPOSIT_A => 5
 		],
 		Good::MITHRIL => [
-			self::DEPOSIT_SIZE  => 2500, self::DEPOSIT_COUNT => 5,
+			self::DEPOSIT_SIZE  => 2500, self::DEPOSIT_COUNT => 1,
 			self::DEPOSIT_DEPTH => 7, self::DEPOSIT_SPREAD => 2, self::DEPOSIT_A => 3
 		]
 	];
