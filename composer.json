@@ -11,7 +11,7 @@
 		"pbem",
 		"tools"
 	],
-	"time": "2021-02-17",
+	"time": "2021-03-06",
 	"license": "GPL-3.0",
 	"authors": [
 		{
@@ -25,7 +25,7 @@
 		"ext-json": "*",
 		"ext-pdo": "*",
 		"lemuria-pbem/lemuria": "dev-master",
-		"lemuria-pbem/model-lemuria": "dev-master"
+		"lemuria-pbem/model-fantasya": "dev-master"
 	},
 	"require-dev": {
 		"jetbrains/phpstorm-attributes": "~1.0",
@@ -38,7 +38,7 @@
 		},
 		{
 			"type": "vcs",
-			"url": "git@github.com:lemuria-pbem/model-lemuria.git"
+			"url": "git@github.com:lemuria-pbem/model-fantasya.git"
 		}
 	],
 

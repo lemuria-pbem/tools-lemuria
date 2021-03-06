@@ -2,6 +2,8 @@
 declare(strict_types = 1);
 namespace Lemuria\Tools\Lemuria;
 
+use JetBrains\PhpStorm\Pure;
+
 final class Temperature
 {
 	private float $equator;
@@ -19,7 +21,7 @@ final class Temperature
 			27.0 - ($y - $this->equator) / $this->equator * 29.0;
 	}
 
-	public function forAltitude(int $y, int $altitude): float {
+	#[Pure] public function forAltitude(int $y, int $altitude): float {
 		$temperature = $this->forY($y);
 		if ($altitude > 0) {
 			$temperature -= $altitude * $this->hTemp / 100.0;

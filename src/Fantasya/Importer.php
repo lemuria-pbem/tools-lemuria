@@ -4,27 +4,26 @@ namespace Lemuria\Tools\Lemuria\Fantasya;
 
 use JetBrains\PhpStorm\Pure;
 
-use Lemuria\Lemuria;
 use function Lemuria\getClass;
 use Lemuria\Exception\EntitySetException;
 use Lemuria\Id;
-use Lemuria\Model\Lemuria\Ability;
-use Lemuria\Model\Lemuria\Building\Castle;
-use Lemuria\Model\Lemuria\Commodity\Food;
-use Lemuria\Model\Lemuria\Commodity\Peasant;
-use Lemuria\Model\Lemuria\Commodity\Silver;
-use Lemuria\Model\Lemuria\Commodity\Wood;
-use Lemuria\Model\Lemuria\Construction;
-use Lemuria\Model\Lemuria\Factory\BuilderTrait;
-use Lemuria\Model\Lemuria\Luxuries;
-use Lemuria\Model\Lemuria\Luxury;
-use Lemuria\Model\Lemuria\Offer;
-use Lemuria\Model\Lemuria\Party;
-use Lemuria\Model\Lemuria\Quantity;
-use Lemuria\Model\Lemuria\Region;
-use Lemuria\Model\Lemuria\Relation;
-use Lemuria\Model\Lemuria\Unit;
-use Lemuria\Model\Lemuria\Vessel;
+use Lemuria\Lemuria;
+use Lemuria\Model\Fantasya\Ability;
+use Lemuria\Model\Fantasya\Building\Castle;
+use Lemuria\Model\Fantasya\Commodity\Peasant;
+use Lemuria\Model\Fantasya\Commodity\Silver;
+use Lemuria\Model\Fantasya\Commodity\Wood;
+use Lemuria\Model\Fantasya\Construction;
+use Lemuria\Model\Fantasya\Factory\BuilderTrait;
+use Lemuria\Model\Fantasya\Luxuries;
+use Lemuria\Model\Fantasya\Luxury;
+use Lemuria\Model\Fantasya\Offer;
+use Lemuria\Model\Fantasya\Party;
+use Lemuria\Model\Fantasya\Quantity;
+use Lemuria\Model\Fantasya\Region;
+use Lemuria\Model\Fantasya\Relation;
+use Lemuria\Model\Fantasya\Unit;
+use Lemuria\Model\Fantasya\Vessel;
 use Lemuria\Model\World\OctagonalMap;
 
 class Importer
