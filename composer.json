@@ -11,6 +11,7 @@
 		"pbem",
 		"tools"
 	],
+	"version": "0.1.0",
 	"time": "2021-03-06",
 	"license": "GPL-3.0",
 	"authors": [
