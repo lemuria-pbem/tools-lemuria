@@ -6,7 +6,6 @@ use Lemuria\Tools\Lemuria\Area;
 use Lemuria\Tools\Lemuria\Good;
 use Lemuria\Tools\Lemuria\Land;
 use Lemuria\Tools\Lemuria\Map;
-use Lemuria\Tools\Lemuria\MapConfig;
 use Lemuria\Tools\Lemuria\Moisture;
 use Lemuria\Tools\Lemuria\Terrain;
 
@@ -45,25 +44,22 @@ use Lemuria\Tools\Lemuria\Terrain;
  */
 trait Fertility
 {
-	private MapConfig $config;
-
-	private array $map;
-
-	private function calculateFertility(MapConfig $config, array &$map): void {
+	private function calculateFertility(): void {
+		$config = &$this->config;
+		$map    = &$this->map;
 		if ($config->status[__FUNCTION__] ?? false) {
 			return;
 		}
-		$this->config = $config;
-		$this->map    =& $map;
-		$minX         = $config->offsetX + 1;
-		$maxX         = $config->maxX - 1;
-		$minY         = $config->offsetY + 1;
-		$maxY         = $config->maxY - 1;
+
+		$minX = $config->offsetX + 1;
+		$maxX = $config->maxX - 1;
+		$minY = $config->offsetY + 1;
+		$maxY = $config->maxY - 1;
 
 		for ($y = $minY; $y < $maxY; $y++) {
 			for ($x = $minX; $x < $maxX; $x++) {
 				$altitude  = $map[$y][$x][Map::ALTITUDE];
-				$land      = [Land::WATER => 0, Land::FIELD => 0, Land::PASTURE => 0, Land::FOREST => 0, Land::BUSH => 0];
+				$land      = [];
 
 				// Calculate water area.
 				$vegetation = $map[$y][$x][Map::VEGETATION];
@@ -136,7 +132,7 @@ trait Fertility
 				$remaining          -= $pasture;
 				$land[Land::PASTURE] = $pasture;
 
-    			$field = $temperature > 0.0 ? $remaining * rand(0, 100) / 100.0 : 0.0;
+    			$field = isset($temperature) && $temperature > 0.0 ? $remaining * rand(0, 100) / 100.0 : 0.0;
     			if ($vegetation === Area::DESERT || $vegetation === Area::HIGH_DESERT || $vegetation === Area::DESERT_MOUNTAIN) {
     				$desertField = $map[$y][$x][Map::FLOW] / 100.0 * $arable;
 					if ($field > $desertField) {

@@ -7,24 +7,22 @@ use JetBrains\PhpStorm\Pure;
 use Lemuria\Tools\Lemuria\Area;
 use Lemuria\Tools\Lemuria\Direction;
 use Lemuria\Tools\Lemuria\Map;
-use Lemuria\Tools\Lemuria\MapConfig;
 use Lemuria\Tools\Lemuria\Moisture;
 use Lemuria\Tools\Lemuria\Terrain;
 
 trait WaterFlow
 {
-	private MapConfig $config;
-
 	#[Pure] public function getPrecipitationMap(): Map {
 		return new Map($this->config, $this->map, Map::WATER);
 	}
 
-	private array $map;
-
-	private function calculateWaterFlow(MapConfig $config, array &$map): void {
+	private function calculateWaterFlow(): void {
+		$config = &$this->config;
+		$map    = &$this->map;
 		if ($config->status[__FUNCTION__] ?? false) {
 			return;
 		}
+
 		$this->config = $config;
 		$this->map    =& $map;
 		$minX = $this->config->offsetX + $this->config->edge;
