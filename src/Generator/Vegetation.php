@@ -4,30 +4,26 @@ namespace Lemuria\Tools\Lemuria\Generator;
 
 use Lemuria\Tools\Lemuria\Area;
 use Lemuria\Tools\Lemuria\Map;
-use Lemuria\Tools\Lemuria\MapConfig;
 use Lemuria\Tools\Lemuria\Moisture;
 use Lemuria\Tools\Lemuria\Terrain;
 
 trait Vegetation
 {
-	private MapConfig $config;
-
-	private array $map;
-
 	public function getVegetationMap(): Map {
 		return new Map($this->config, $this->map, Map::VEGETATION);
 	}
 
-	private function calculateVegetation(MapConfig $config, array &$map): void {
+	private function calculateVegetation(): void {
+		$config = &$this->config;
+		$map    = &$this->map;
 		if ($config->status[__FUNCTION__] ?? false) {
 			return;
 		}
-		$this->config = $config;
-		$this->map    =& $map;
-		$minX         = $config->offsetX;
-		$maxX         = $config->maxX;
-		$minY         = $config->offsetY;
-		$maxY         = $config->maxY;
+
+		$minX = $config->offsetX;
+		$maxX = $config->maxX;
+		$minY = $config->offsetY;
+		$maxY = $config->maxY;
 
 		for ($y = $minY; $y < $maxY; $y++) {
 			for ($x = $minX; $x < $maxX; $x++) {

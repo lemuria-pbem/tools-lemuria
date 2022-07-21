@@ -21,10 +21,6 @@ use Lemuria\Tools\Lemuria\MapConfig;
  */
 trait Resources
 {
-	private MapConfig $config;
-
-	private array $map;
-
 	private array $gauss = [];
 
 	public function getResource(string $resource): Map {
@@ -32,16 +28,17 @@ trait Resources
 		return $map->setResource($resource);
 	}
 
-	private function calculateResources(MapConfig $config, array &$map): void {
+	private function calculateResources(): void {
+		$config = &$this->config;
+		$map    = &$this->map;
 		if ($config->status[__FUNCTION__] ?? false) {
 			return;
 		}
-		$this->config = $config;
-		$this->map    =& $map;
-		$minX         = $config->offsetX + 4;
-		$maxX         = $config->maxX - 5;
-		$minY         = $config->offsetY + 4;
-		$maxY         = $config->maxY - 5;
+
+		$minX = $config->offsetX + 4;
+		$maxX = $config->maxX - 5;
+		$minY = $config->offsetY + 4;
+		$maxY = $config->maxY - 5;
 		$this->initGauss();
 
 		foreach ($config->resource as $name => $resource) {

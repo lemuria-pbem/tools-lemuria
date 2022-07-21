@@ -3,20 +3,20 @@ declare(strict_types = 1);
 namespace Lemuria\Tools\Lemuria\Generator;
 
 use Lemuria\Tools\Lemuria\Map;
-use Lemuria\Tools\Lemuria\MapConfig;
 
 trait Precipitation
 {
-	private function calculateClimate(MapConfig $config, array &$map): void {
+	private function calculateClimate(): void {
+		$config = &$this->config;
+		$map    = &$this->map;
 		if ($config->status[__FUNCTION__] ?? false) {
 			return;
 		}
-		$this->config = $config;
-		$this->map    =& $map;
-		$minX         = $config->offsetX;
-		$maxX         = $config->maxX - 1;
-		$minY         = $config->offsetY;
-		$maxY         = $config->maxY;
+
+		$minX = $config->offsetX;
+		$maxX = $config->maxX - 1;
+		$minY = $config->offsetY;
+		$maxY = $config->maxY;
 
 		// Humidity and rainfall from east and west.
 		for ($y = $minY; $y < $maxY; $y++) {
@@ -55,7 +55,7 @@ trait Precipitation
 					$precip   = $map[$y][$x][Map::PRECIPITATION];
 					$avgMoist = $sum / 7.0 + $precip;
 
-					$map[$y][$x][Map::PRECIPITATION] = (0.1 + $altitude / 3000) * $avgMoist;
+					$map[$y][$x][Map::PRECIPITATION] = (0.1 + $altitude / 1200) * $avgMoist;
 				}
 			}
 		}
@@ -72,7 +72,7 @@ trait Precipitation
 				$moist = $moistBefore + $mForTemp / 3.0;
 			}
 		} else {
-			$precip = (0.1 + $altitude / 3000) * $moistBefore;
+			$precip = (0.1 + $altitude / 4000) * $moistBefore;
 			$moist  = $moistBefore - $precip;
 
 			$this->map[$y][$x][Map::PRECIPITATION] += $precip;

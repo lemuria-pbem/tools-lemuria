@@ -2,8 +2,6 @@
 declare(strict_types = 1);
 namespace Lemuria\Tools\Lemuria;
 
-use JetBrains\PhpStorm\Pure;
-
 use Lemuria\Tools\Lemuria\Generator\Altitude;
 use Lemuria\Tools\Lemuria\Generator\Fertility;
 use Lemuria\Tools\Lemuria\Generator\Precipitation;
@@ -48,36 +46,35 @@ class MapGenerator
 
 	private array $map;
 
-	#[Pure] public function __construct(private MapConfig $config) {
-		$this->map = array_fill(0, $this->config->height, array_fill(0, $this->config->width, $this->region));
+	private array $seeds;
+
+	public function __construct(private MapConfig $config) {
+		$this->initSeeds();
+		$this->initMap($this->region);
 	}
 
 	public function run(): self {
-		$this->calculateTerrain($this->config, $this->map);
-		$this->calculateClimate($this->config, $this->map);
-		$this->calculateWaterFlow($this->config, $this->map);
-		$this->calculateVegetation($this->config, $this->map);
-		$this->calculateFertility($this->config, $this->map);
-		$this->calculateResources($this->config, $this->map);
+		$this->generateRandomSeeds();
+		$this->calculateTerrain();
+		$this->calculateClimate();
+		$this->calculateWaterFlow();
+		$this->calculateVegetation();
+		$this->calculateFertility();
+		$this->calculateResources();
 
 		return $this;
 	}
 
+	public function getSeeds(): array {
+		return $this->seeds;
+	}
+
+	public function setSeeds(array $seeds): void {
+		$this->seeds = $seeds;
+	}
+
 	public function load(array $map): void {
-		if (count($map) === $this->config->height) {
-			foreach ($map as $y => $row) {
-				if (count($row) === $this->config->width) {
-					foreach ($row as $x => $values) {
-						if (isset($this->map[$y][$x]) && isset($values[Map::ALTITUDE])) {
-							$altitude = $values[Map::ALTITUDE];
-							if (is_int($altitude)) {
-								$this->map[$y][$x][Map::ALTITUDE] = $altitude;
-							}
-						}
-					}
-				}
-			}
-		}
+		$this->map = $map;
 	}
 
 	public function save(): array {

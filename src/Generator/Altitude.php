@@ -9,10 +9,6 @@ use Lemuria\Tools\Lemuria\Terrain;
 
 trait Altitude
 {
-	private MapConfig $config;
-
-	private array $map;
-
 	public function getTerrainMap(): Map {
 		$minX = $this->config->offsetX + $this->config->edge;
 		$maxX = $this->config->maxX - $this->config->edge;
@@ -33,41 +29,86 @@ trait Altitude
 		return new Map($this->config, $this->map, Map::TYPE);
 	}
 
-	private function calculateTerrain(MapConfig $config, array &$map): void {
-		if ($config->status[__FUNCTION__] ?? false) {
-			return;
-		}
-		$this->config = $config;
-		$this->map    =& $map;
+	private function initSeeds(): void {
+		$this->seeds = array_fill(0, $this->config->seeds, ['x' => 0, 'y' => 0, 'a' => 0]);
+	}
 
-		$minX  = $config->offsetX + $config->edge;
-		$maxX  = $config->maxX - $config->edge;
-		$minY  = $config->offsetY + $config->edge;
-		$maxY  = $config->maxY - $config->edge;
-		$seedX = array_fill(0, $config->seeds, 0);
-		$seedY = array_fill(0, $config->seeds, 0);
+	private function initMap(array $region): void {
+		$this->map = array_fill(0, $this->config->height, array_fill(0, $this->config->width, $region));
 
 		// Set regions of calculated map to ocean depth.
+		$minX = $this->config->offsetX + $this->config->edge;
+		$maxX = $this->config->maxX - $this->config->edge;
+		$minY = $this->config->offsetY + $this->config->edge;
+		$maxY = $this->config->maxY - $this->config->edge;
 		for ($y = $minY; $y < $maxY; $y++) {
 			for ($x = $minX; $x < $maxX; $x++) {
-				$map[$y][$x][Map::ALTITUDE] = MapConfig::ZERO;
+				$this->map[$y][$x][Map::ALTITUDE] = MapConfig::ZERO;
+			}
+		}
+	}
+
+	private function generateRandomSeeds(): void {
+		$config = &$this->config;
+		$map    = &$this->map;
+		$seeds  = &$this->seeds;
+
+		if (!($config->status[__FUNCTION__] ?? false)) {
+			$minX  = $config->offsetX + $config->edge;
+			$maxX  = $config->maxX - $config->edge;
+			$minY  = $config->offsetY + $config->edge;
+			$maxY  = $config->maxY - $config->edge;
+			$order = [];
+			for ($i = 0; $i < $config->seeds; $i++) {
+				$x = rand($minX, $maxX);
+				$y = rand($minY, $maxY);
+				if (isset($order[$y][$x])) {
+					$i--;
+					continue;
+				}
+				$order[$y][$x] = rand($config->minHeight, $config->maxHeight);
+			}
+
+			$i = 0;
+			ksort($order);
+			foreach ($order as $y => $altitudes) {
+				ksort($altitudes);
+				foreach ($altitudes as $x => $altitude) {
+					$seeds[$i]['x'] = $x;
+					$seeds[$i]['y'] = $y;
+					$seeds[$i]['a'] = $altitude;
+					$i++;
+				}
 			}
 		}
 
-		// Calculate random seeds.
-		for ($i = 0; $i < $config->seeds; $i++) {
-			$x                          = rand($minX, $maxX);
-			$y                          = rand($minY, $maxY);
-			$altitude                   = rand($config->minHeight, $config->maxHeight);
-			$seedX[$i]                  = $x;
-			$seedY[$i]                  = $y;
+		for ($i = 0; $i < $this->config->seeds; $i++) {
+			$x                          = $seeds[$i]['x'];
+			$y                          = $seeds[$i]['y'];
+			$altitude                   = $seeds[$i]['a'];
 			$map[$y][$x][Map::ALTITUDE] = $altitude;
 		}
 
+		$config->status[__FUNCTION__] = true;
+	}
+
+	private function calculateTerrain(): void {
+		$config = &$this->config;
+		$map    = &$this->map;
+		$seeds  = &$this->seeds;
+		if ($config->status[__FUNCTION__] ?? false) {
+			return;
+		}
+
+		$minX = $config->offsetX + $config->edge;
+		$maxX = $config->maxX - $config->edge;
+		$minY = $config->offsetY + $config->edge;
+		$maxY = $config->maxY - $config->edge;
+
 		// First ring around seeds.
 		for ($i = 0; $i < $config->seeds; $i++) {
-			$x = $seedX[$i];
-			$y = $seedY[$i];
+			$x = $seeds[$i]['x'];
+			$y = $seeds[$i]['y'];
 			$this->interpolate($x, $y, 0, 1);
 			$this->interpolate($x, $y, 1, 0);
 			$this->interpolate($x, $y, 1, -1);
@@ -78,8 +119,8 @@ trait Altitude
 
 		// Second ring around seeds.
 		for ($i = 0; $i < $config->seeds; $i++) {
-			$x = $seedX[$i];
-			$y = $seedY[$i];
+			$x = $seeds[$i]['x'];
+			$y = $seeds[$i]['y'];
 			$this->interpolate($x, $y, 0, 2);
 			$this->interpolate($x, $y, 2, 0);
 			$this->interpolate($x, $y, 2, -2);

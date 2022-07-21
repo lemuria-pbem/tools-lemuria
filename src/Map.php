@@ -76,7 +76,7 @@ final class Map
 	}
 
 	public function Resource(): array {
-		return $this->map[$this->y][$this->x][self::RESOURCE][$this->resource];
+		return $this->map[$this->y][$this->x][self::RESOURCE][$this->resource] ?? [];
 	}
 
 	public function setX(int $x): self {
