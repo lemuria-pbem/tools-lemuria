@@ -4,7 +4,9 @@ namespace Lemuria\Tools\Lemuria;
 
 use JetBrains\PhpStorm\Pure;
 
-final class Map
+use Lemuria\Exception\LemuriaException;
+
+final class Map implements \ArrayAccess
 {
 	public const ALTITUDE = 0;
 
@@ -46,7 +48,7 @@ final class Map
 
 	private string $resource = '';
 
-	#[Pure] public function __construct(private MapConfig $config, private array $map, private int $type) {
+	#[Pure] public function __construct(private readonly MapConfig $config, private readonly array $map, private readonly int $type) {
 		$this->width  = count($map[0]);
 		$this->height = count($map);
 	}
@@ -77,6 +79,28 @@ final class Map
 
 	public function Resource(): array {
 		return $this->map[$this->y][$this->x][self::RESOURCE][$this->resource] ?? [];
+	}
+
+	/**
+	 * @var int $offset
+	 */
+	public function offsetExists(mixed $offset): bool {
+		return is_int($offset) && isset($this->map[$offset]);
+	}
+
+	/**
+	 * @var int $offset
+	 */
+	public function offsetGet(mixed $offset): ?array {
+		return $this->offsetExists($offset) ? $this->map[$offset] : null;
+	}
+
+	public function offsetSet(mixed $offset, mixed $value): void {
+		throw new LemuriaException('Map data cannot be set.');
+	}
+
+	public function offsetUnset(mixed $offset): void {
+		throw new LemuriaException('Map data cannot be unset.');
 	}
 
 	public function setX(int $x): self {
