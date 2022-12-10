@@ -48,7 +48,7 @@ class MapGenerator
 
 	private array $seeds;
 
-	public function __construct(private MapConfig $config) {
+	public function __construct(private readonly MapConfig $config) {
 		$this->initSeeds();
 		$this->initMap($this->region);
 	}
