@@ -155,7 +155,7 @@ class Importer
 					$region->Resources()->add(new Quantity(self::createCommodity(Silver::class), $silver));
 				}
 				if ($food > 0) {
-					$region->Resources()->add(new Quantity(self::createCommodity(Food::class), $food));
+					//$region->Resources()->add(new Quantity(self::createCommodity(Food::class), $food));
 				}
 
 				$sql  = "SELECT anzahl, resource FROM resourcen WHERE koordx = " . $kx . " AND koordy = " . $ky . " AND welt = " . $this->world;
@@ -461,7 +461,7 @@ class Importer
 			$unit         = $this->units[$uid];
 			try {
 				$construction->Inhabitants()->setOwner($unit);
-			} catch (EntitySetException $e) {
+			} catch (EntitySetException) {
 			}
 		}
 		foreach ($this->captains as $vid => $uid) {
@@ -479,7 +479,7 @@ class Importer
 			$unit   = $this->units[$uid];
 			try {
 				$vessel->Passengers()->setOwner($unit);
-			} catch (EntitySetException $e) {
+			} catch (EntitySetException) {
 			}
 		}
 	}

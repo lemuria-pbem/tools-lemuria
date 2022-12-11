@@ -2,15 +2,13 @@
 declare (strict_types = 1);
 namespace Lemuria\Tools\Lemuria\Fantasya;
 
-use JetBrains\PhpStorm\Pure;
-
+use Lemuria\Model\World\Direction;
 use function Lemuria\getClass;
 use Lemuria\Model\Fantasya\Ability;
 use Lemuria\Model\Fantasya\Building\AbstractCastle;
 use Lemuria\Model\Fantasya\Building\Cabin;
 use Lemuria\Model\Fantasya\Building\Sawmill;
-use Lemuria\Model\Fantasya\Combat;
-use Lemuria\Model\Fantasya\Commodity\Armor;
+use Lemuria\Model\Fantasya\Combat\BattleRow;
 use Lemuria\Model\Fantasya\Commodity\Camel;
 use Lemuria\Model\Fantasya\Commodity\Carriage;
 use Lemuria\Model\Fantasya\Commodity\Elephant;
@@ -19,7 +17,6 @@ use Lemuria\Model\Fantasya\Commodity\Griffin;
 use Lemuria\Model\Fantasya\Commodity\Griffinegg;
 use Lemuria\Model\Fantasya\Commodity\Horse;
 use Lemuria\Model\Fantasya\Commodity\Iron;
-use Lemuria\Model\Fantasya\Commodity\Ironshield;
 use Lemuria\Model\Fantasya\Commodity\Luxury\Balsam;
 use Lemuria\Model\Fantasya\Commodity\Luxury\Fur;
 use Lemuria\Model\Fantasya\Commodity\Luxury\Gem;
@@ -28,8 +25,11 @@ use Lemuria\Model\Fantasya\Commodity\Luxury\Oil;
 use Lemuria\Model\Fantasya\Commodity\Luxury\Olibanum;
 use Lemuria\Model\Fantasya\Commodity\Luxury\Silk;
 use Lemuria\Model\Fantasya\Commodity\Luxury\Spice;
-use Lemuria\Model\Fantasya\Commodity\Mail;
 use Lemuria\Model\Fantasya\Commodity\Pegasus;
+use Lemuria\Model\Fantasya\Commodity\Protection\Armor;
+use Lemuria\Model\Fantasya\Commodity\Protection\Ironshield;
+use Lemuria\Model\Fantasya\Commodity\Protection\Mail;
+use Lemuria\Model\Fantasya\Commodity\Protection\Woodshield;
 use Lemuria\Model\Fantasya\Commodity\Silver;
 use Lemuria\Model\Fantasya\Commodity\Stone;
 use Lemuria\Model\Fantasya\Commodity\Weapon\Battleaxe;
@@ -40,7 +40,6 @@ use Lemuria\Model\Fantasya\Commodity\Weapon\Spear;
 use Lemuria\Model\Fantasya\Commodity\Weapon\Sword;
 use Lemuria\Model\Fantasya\Commodity\Weapon\Warhammer;
 use Lemuria\Model\Fantasya\Commodity\Wood;
-use Lemuria\Model\Fantasya\Commodity\Woodshield;
 use Lemuria\Model\Fantasya\Landscape\Desert;
 use Lemuria\Model\Fantasya\Landscape\Forest;
 use Lemuria\Model\Fantasya\Landscape\Highland;
@@ -95,52 +94,29 @@ use Lemuria\Model\Fantasya\Talent\Woodchopping;
 final class Converter
 {
 	public function landscape(string $typ): string {
-		switch ($typ) {
-			case 'Ozean' :
-				return Ocean::class;
-			case 'Ebene' :
-				return Plain::class;
-			case 'Wald' :
-				return Forest::class;
-			case 'Berge' :
-				return Mountain::class;
-			case 'Sumpf' :
-				return Swamp::class;
-			case 'Hochland' :
-				return Highland::class;
-			case 'Gletscher' :
-				return Glacier::class;
-			case 'Wueste' :
-				return Desert::class;
-			default :
-				throw new \InvalidArgumentException('Invalid type: ' . $typ);
-		}
+		return match ($typ) {
+			'Ozean'     => Ocean::class,
+			'Ebene'     => Plain::class,
+			'Wald'      => Forest::class,
+			'Berge'     => Mountain::class,
+			'Sumpf'     => Swamp::class,
+			'Hochland'  => Highland::class,
+			'Gletscher' => Glacier::class,
+			'Wueste'    => Desert::class,
+			default     => throw new \InvalidArgumentException('Invalid type: ' . $typ),
+		};
 	}
 
 	public function resource(string $resource): string {
-		switch ($resource) {
-			case 'Holz' :
-				return Wood::class;
-			case 'Eisen' :
-				return Iron::class;
-			case 'Stein' :
-				return Stone::class;
-			case 'Schwert' :
-				return Sword::class;
-			case 'Speer' :
-				return Spear::class;
-			case 'Gold' :
-			case 'Pferd' :
-			case 'Kamel' :
-			case 'Elefant' :
-			case 'Pegasus' :
-			case 'Greif' :
-			case 'Alpaka' :
-			case 'Zotte' :
-				return '';
-			default :
-				throw new \InvalidArgumentException('Invalid resource: ' . $resource);
-		}
+		return match ($resource) {
+			'Holz'    => Wood::class,
+			'Eisen'   => Iron::class,
+			'Stein'   => Stone::class,
+			'Schwert' => Sword::class,
+			'Speer'   => Spear::class,
+			'Gold', 'Pferd', 'Kamel', 'Elefant', 'Pegasus', 'Greif', 'Alpaka', 'Zotte' => '',
+			default   => throw new \InvalidArgumentException('Invalid resource: ' . $resource),
+		};
 	}
 
 	public function building(string $type, int $size): string {
@@ -158,265 +134,147 @@ final class Converter
 	}
 
 	public function race(string $race): string {
-		switch ($race) {
-			case 'Aquaner' :
-				return Aquan::class;
-			case 'Elf' :
-				return Elf::class;
-			case 'Halbling' :
-				return Halfling::class;
-			case 'Mensch' :
-				return Human::class;
-			case 'Ork' :
-				return Orc::class;
-			case 'Troll' :
-				return Troll::class;
-			case 'Zwerg' :
-				return Dwarf::class;
-			case 'Dragonfly' :
-			case 'Echse' :
-			case 'Goblin' :
-			case 'Greif' :
-			case 'Hoellenhund' :
-			case 'Kobold' :
-			case 'Krake' :
-			case 'Puschkin' :
-				return '';
-			default :
-				throw new \InvalidArgumentException('Invalid race: ' . $race);
-		}
+		return match ($race) {
+			'Aquaner'  => Aquan::class,
+			'Elf'      => Elf::class,
+			'Halbling' => Halfling::class,
+			'Mensch'   => Human::class,
+			'Ork'      => Orc::class,
+			'Troll'    => Troll::class,
+			'Zwerg'    => Dwarf::class,
+			'Dragonfly', 'Echse', 'Goblin', 'Greif', 'Hoellenhund', 'Kobold', 'Krake', 'Puschkin' => '',
+			default    => throw new \InvalidArgumentException('Invalid race: ' . $race),
+		};
 	}
 
 	public function ship(string $ship): string {
-		switch ($ship) {
-			case 'Boot' :
-				return Boat::class;
-			case 'Drachenschiff' :
-				return Dragonship::class;
-			case 'Galeone' :
-				return Galleon::class;
-			case 'Karavelle' :
-				return Caravel::class;
-			case 'Langboot' :
-				return Longboat::class;
-			case 'Tireme' :
-				return Trireme::class;
-			default :
-				throw new \InvalidArgumentException('Invalid ship: ' . $ship);
-		}
+		return match ($ship) {
+			'Boot'          => Boat::class,
+			'Drachenschiff' => Dragonship::class,
+			'Galeone'       => Galleon::class,
+			'Karavelle'     => Caravel::class,
+			'Langboot'      => Longboat::class,
+			'Tireme'        => Trireme::class,
+			default         => throw new \InvalidArgumentException('Invalid ship: ' . $ship),
+		};
 	}
 
-	#[Pure] public function anchor(string $anchor): string {
-		return str_replace('O', 'E', $anchor);
+	public function anchor(string $anchor): Direction {
+		return Direction::from(str_replace('O', 'E', $anchor));
 	}
 
 	public function talent(string $talent): string {
-		switch ($talent) {
-			case 'Armbrustschiessen' :
-				return Crossbowing::class;
-			case 'Ausdauer' :
-				return Stamina::class;
-			case 'Bergbau' :
-				return Mining::class;
-			case 'Bogenbau' :
-				return Bowmaking::class;
-			case 'Bogenschiessen' :
-				return Archery::class;
-			case 'Burgenbau' :
-				return Constructing::class;
-			case 'Handel' :
-				return Trading::class;
-			case 'Hiebwaffen' :
-				return Bladefighting::class;
-			case 'Holzfaellen' :
-				return Woodchopping::class;
-			case 'Katapultbedienung' :
-				return Catapulting::class;
-			case 'Magie' :
-				return Magic::class;
-			case 'Pferdedressur' :
-				return Horsetaming::class;
-			case 'Reiten' :
-				return Riding::class;
-			case 'Ruestungsbau' :
-				return Armory::class;
-			case 'Schiffbau' :
-				return Shipbuilding::class;
-			case 'Segeln' :
-				return Navigation::class;
-			case 'Speerkampf' :
-				return Spearfighting::class;
-			case 'Spionage' :
-				return Espionage::class;
-			case 'Steinbau' :
-				return Quarrying::class;
-			case 'Steuereintreiben' :
-				return Taxcollecting::class;
-			case 'Strassenbau' :
-				return Roadmaking::class;
-			case 'Taktik' :
-				return Tactics::class;
-			case 'Tarnung' :
-				return Camouflage::class;
-			case 'Unterhaltung' :
-				return Entertaining::class;
-			case 'Waffenbau' :
-				return Weaponry::class;
-			case 'Wagenbau' :
-				return Carriagemaking::class;
-			case 'Wahrnehmung' :
-				return Perception::class;
-			case 'Alchemie' :
-			case 'Drachenreiten' :
-			case 'Kraeuterkunde' :
-			case 'Monsterkampf' :
-			case 'Religion' :
-				return '';
-			default :
-				throw new \InvalidArgumentException('Invalid skill: ' . $talent);
-		}
+		return match ($talent) {
+			'Armbrustschiessen' => Crossbowing::class,
+			'Ausdauer'          => Stamina::class,
+			'Bergbau'           => Mining::class,
+			'Bogenbau'          => Bowmaking::class,
+			'Bogenschiessen'    => Archery::class,
+			'Burgenbau'         => Constructing::class,
+			'Handel'            => Trading::class,
+			'Hiebwaffen'        => Bladefighting::class,
+			'Holzfaellen'       => Woodchopping::class,
+			'Katapultbedienung' => Catapulting::class,
+			'Magie'             => Magic::class,
+			'Pferdedressur'     => Horsetaming::class,
+			'Reiten'            => Riding::class,
+			'Ruestungsbau'      => Armory::class,
+			'Schiffbau'         => Shipbuilding::class,
+			'Segeln'            => Navigation::class,
+			'Speerkampf'        => Spearfighting::class,
+			'Spionage'          => Espionage::class,
+			'Steinbau'          => Quarrying::class,
+			'Steuereintreiben'  => Taxcollecting::class,
+			'Strassenbau'       => Roadmaking::class,
+			'Taktik'            => Tactics::class,
+			'Tarnung'           => Camouflage::class,
+			'Unterhaltung'      => Entertaining::class,
+			'Waffenbau'         => Weaponry::class,
+			'Wagenbau'          => Carriagemaking::class,
+			'Wahrnehmung'       => Perception::class,
+			'Alchemie', 'Drachenreiten', 'Kraeuterkunde', 'Monsterkampf', 'Religion' => '',
+			default             => throw new \InvalidArgumentException('Invalid skill: ' . $talent),
+		};
 	}
 
 	public function commodity(string $commodity): string {
-		switch ($commodity) {
-			case 'Armbrust' :
-				return Crossbow::class;
-			case 'Balsam' :
-				return Balsam::class;
-			case 'Bogen' :
-				return Bow::class;
-			case 'Eisen' :
-				return Iron::class;
-			case 'Eisenschild' :
-				return Ironshield::class;
-			case 'Elefant' :
-			case 'Kriegselefant' :
-				return Elephant::class;
-			case 'Gewuerz' :
-				return Spice::class;
-			case 'Gold' :
-				return Gold::class;
-			case 'Greif' :
-				return Griffin::class;
-			case 'Greifenei' :
-				return Griffinegg::class;
-			case 'Holz' :
-				return Wood::class;
-			case 'Holzschild' :
-				return Woodshield::class;
-			case 'Juwel' :
-				return Gem::class;
-			case 'Kamel' :
-			case'Alpaka' :
-				return Camel::class;
-			case 'Katapult' :
-				return Catapult::class;
-			case 'Kettenhemd' :
-				return Mail::class;
-			case 'Kriegshammer' :
-				return Warhammer::class;
-			case 'Myhrre' :
-				return Myrrh::class;
-			case 'Oel' :
-				return Oil::class;
-			case 'Pegasus' :
-				return Pegasus::class;
-			case 'Pelz' :
-				return Fur::class;
-			case 'Pferd' :
-			case 'Zotte' :
-				return Horse::class;
-			case 'Plattenpanzer' :
-				return Armor::class;
-			case 'Schwert' :
-				return Sword::class;
-			case 'Seide' :
-				return Silk::class;
-			case 'Silber' :
-				return Silver::class;
-			case 'Speer' :
-				return Spear::class;
-			case 'Stein' :
-				return Stone::class;
-			case 'Streitaxt' :
-				return Battleaxe::class;
-			case 'Wagen' :
-				return Carriage::class;
-			case 'Weihrauch' :
-				return Olibanum::class;
-			case 'Einhorn' :
-			case 'Elefantenpanzer' :
-				return '';
-			default :
-				throw new \InvalidArgumentException('Invalid commodity: ' . $commodity);
-		}
+		return match ($commodity) {
+			'Armbrust'                   => Crossbow::class,
+			'Balsam'                     => Balsam::class,
+			'Bogen'                      => Bow::class,
+			'Eisen'                      => Iron::class,
+			'Eisenschild'                => Ironshield::class,
+			'Elefant', 'Kriegselefant'   => Elephant::class,
+			'Gewuerz'                    => Spice::class,
+			'Gold'                       => Gold::class,
+			'Greif'                      => Griffin::class,
+			'Greifenei'                  => Griffinegg::class,
+			'Holz'                       => Wood::class,
+			'Holzschild'                 => Woodshield::class,
+			'Juwel'                      => Gem::class,
+			'Kamel', 'Alpaka'            => Camel::class,
+			'Katapult'                   => Catapult::class,
+			'Kettenhemd'                 => Mail::class,
+			'Kriegshammer'               => Warhammer::class,
+			'Myhrre'                     => Myrrh::class,
+			'Oel'                        => Oil::class,
+			'Pegasus'                    => Pegasus::class,
+			'Pelz'                       => Fur::class,
+			'Pferd', 'Zotte'             => Horse::class,
+			'Plattenpanzer'              => Armor::class,
+			'Schwert'                    => Sword::class,
+			'Seide'                      => Silk::class,
+			'Silber'                     => Silver::class,
+			'Speer'                      => Spear::class,
+			'Stein'                      => Stone::class,
+			'Streitaxt'                  => Battleaxe::class,
+			'Wagen'                      => Carriage::class,
+			'Weihrauch'                  => Olibanum::class,
+			'Einhorn', 'Elefantenpanzer' => '',
+			default => throw new \InvalidArgumentException('Invalid commodity: ' . $commodity),
+		};
 	}
 
-	public function battleRow(string $kampfposition): int {
-		switch ($kampfposition) {
-			case 'Vorne' :
-				return Combat::FRONT;
-			case 'Hinten' :
-				return Combat::BACK;
-			case 'Nicht' :
-				return Combat::BYSTANDER;
-			case 'Aggressiv' :
-				return Combat::AGGRESSIVE;
-			case 'Fliehe' :
-				return Combat::REFUGEE;
-			default :
-				throw new \InvalidArgumentException('Invalid battle row: ' . $kampfposition);
-		}
+	public function battleRow(string $kampfposition): BattleRow {
+		return match ($kampfposition) {
+			'Vorne'     => BattleRow::Front,
+			'Hinten'    => BattleRow::Back,
+			'Nicht'     => BattleRow::Bystander,
+			'Aggressiv' => BattleRow::Aggressive,
+			'Fliehe'    => BattleRow::Refugee,
+			default     => throw new \InvalidArgumentException('Invalid battle row: ' . $kampfposition),
+		};
 	}
 
 	public function experience(int $lerntage, int $size): int {
-		$level      = (int)sqrt($lerntage / ($size * 15));
-		$experience = Ability::getExperience($level);
-		return $experience;
+		$level = (int)sqrt($lerntage / ($size * 15));
+		return Ability::getExperience($level);
 	}
 
 	public function agreement(string $option): int {
-		switch (strtolower($option)) {
-			case 'gib' :
-				return Relation::GIVE;
-			case 'handel' :
-				return Relation::TRADE;
-			case 'kaempfe' :
-				return Relation::COMBAT;
-			case 'kontaktiere' :
-				return Relation::TELL | Relation::TRADE | Relation::RESOURCES | Relation::ENTER;
-			case 'resourcen' :
-				return Relation::RESOURCES;
-			case 'steuern' :
-			case 'treiben' :
-			case 'unterhalte' :
-				return Relation::EARN;
-			default :
-				throw new \InvalidArgumentException('Invalid agreement: ' . $option);
-		}
+		return match (strtolower($option)) {
+			'gib'         => Relation::GIVE,
+			'handel'      => Relation::TRADE,
+			'kaempfe'     => Relation::COMBAT,
+			'kontaktiere' => Relation::TELL | Relation::TRADE | Relation::RESOURCES | Relation::ENTER,
+			'resourcen'   => Relation::RESOURCES,
+			'steuern', 'treiben', 'unterhalte' => Relation::EARN,
+			default       => throw new \InvalidArgumentException('Invalid agreement: ' . $option),
+		};
 	}
 
 	public function luxury(string $luxus): string {
-		switch ($luxus) {
-			case 'Balsam' :
-				return Balsam::class;
-			case 'Gewuerz' :
-				return Spice::class;
-			case 'Juwel' :
-				return Gem::class;
-			case 'Myhrre' :
-				return Myrrh::class;
-			case 'Oel' :
-				return Oil::class;
-			case 'Pelz' :
-				return Fur::class;
-			case 'Seide' :
-				return Silk::class;
-			case 'Weihrauch' :
-				return Olibanum::class;
-			default :
-				throw new \InvalidArgumentException('Invalid luxury: ' . $luxus);
-		}
+		return match ($luxus) {
+			'Balsam'    => Balsam::class,
+			'Gewuerz'   => Spice::class,
+			'Juwel'     => Gem::class,
+			'Myhrre'    => Myrrh::class,
+			'Oel'       => Oil::class,
+			'Pelz'      => Fur::class,
+			'Seide'     => Silk::class,
+			'Weihrauch' => Olibanum::class,
+			default     => throw new \InvalidArgumentException('Invalid luxury: ' . $luxus),
+		};
 	}
 
 	public function demand(Luxury $luxury, int $nachfrage): int {

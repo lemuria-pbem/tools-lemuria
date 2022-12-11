@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 namespace Lemuria\Tools\Lemuria\Generator;
 
+use function Lemuria\randInt;
 use Lemuria\Tools\Lemuria\Area;
 use Lemuria\Tools\Lemuria\Good;
 use Lemuria\Tools\Lemuria\Land;
@@ -66,14 +67,14 @@ trait Fertility
 				if ($vegetation === Terrain::OCEAN) {
 					$waterArea = 100;
 				} elseif ($vegetation === Moisture::LAKE) {
-					$waterArea              = rand(30, 70); // lakes have a random percentage of water
+					$waterArea              = randInt(30, 70); // lakes have a random percentage of water
 					$map[$y][$x][Map::FLOW] = 0.0; // prevent additional water in lake regions
 				} else {
 					$waterArea = 0;
 					for ($dy = -1; $dy <= 1; $dy++) {
 						for ($dx = -1; $dx <= 1; $dx++) {
 							if ($map[$y + $dy][$x + $dx][Map::VEGETATION] === Terrain::OCEAN) {
-								$waterArea += rand(3, 6); // additional water if neighbour us ocean
+								$waterArea += randInt(3, 6); // additional water if neighbour us ocean
 							}
 						}
 					}
@@ -120,19 +121,19 @@ trait Fertility
 
 				// Calculation of land distribution.
 				if ($vegetation === Area::RAIN_FOREST || $vegetation === Area::HIGH_FOREST || $vegetation === Area::RAIN_MOUNTAIN) {
-					$forest = min($altitude / $config->maxHeight * rand(0, 100) + 60.0, 100.0);
+					$forest = min($altitude / $config->maxHeight * randInt(0, 100) + 60.0, 100.0);
 				} else {
-					$forest = ($altitude / $config->maxHeight * 100.0 - 5.0) * (rand(0, 100) / 100) + 5.0;
+					$forest = ($altitude / $config->maxHeight * 100.0 - 5.0) * (randInt(0, 100) / 100) + 5.0;
 				}
 				$forest             = (int)round($forest * $arable / 100.0);
 				$remaining         -= $forest;
 				$land[Land::FOREST] = $forest;
 
-				$pasture             = (int)round($remaining * rand(0, 100) / 100.0);
+				$pasture             = (int)round($remaining * randInt(0, 100) / 100.0);
 				$remaining          -= $pasture;
 				$land[Land::PASTURE] = $pasture;
 
-    			$field = isset($temperature) && $temperature > 0.0 ? $remaining * rand(0, 100) / 100.0 : 0.0;
+    			$field = isset($temperature) && $temperature > 0.0 ? $remaining * randInt(0, 100) / 100.0 : 0.0;
     			if ($vegetation === Area::DESERT || $vegetation === Area::HIGH_DESERT || $vegetation === Area::DESERT_MOUNTAIN) {
     				$desertField = $map[$y][$x][Map::FLOW] / 100.0 * $arable;
 					if ($field > $desertField) {

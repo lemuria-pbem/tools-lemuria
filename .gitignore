@@ -1,6 +1,10 @@
+/.idea/dataSources
 /vendor
 
+/.idea/dataSources.xml
+/.idea/dataSources.local.xml
 /.idea/deployment.xml
+/.idea/sqldialects.xml
 /.idea/symfony2.xml
 /.idea/workspace.xml
 /composer.lock

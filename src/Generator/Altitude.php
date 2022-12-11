@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 namespace Lemuria\Tools\Lemuria\Generator;
 
+use function Lemuria\randInt;
 use function Lemuria\sign;
 use Lemuria\Tools\Lemuria\Map;
 use Lemuria\Tools\Lemuria\MapConfig;
@@ -60,13 +61,13 @@ trait Altitude
 			$maxY  = $config->maxY - $config->edge;
 			$order = [];
 			for ($i = 0; $i < $config->seeds; $i++) {
-				$x = rand($minX, $maxX);
-				$y = rand($minY, $maxY);
+				$x = randInt($minX, $maxX);
+				$y = randInt($minY, $maxY);
 				if (isset($order[$y][$x])) {
 					$i--;
 					continue;
 				}
-				$order[$y][$x] = rand($config->minHeight, $config->maxHeight);
+				$order[$y][$x] = randInt($config->minHeight, $config->maxHeight);
 			}
 
 			$i = 0;
@@ -178,7 +179,7 @@ trait Altitude
 						}
 					}
 					if ($count) {
-						$map[$y][$x][Map::ALTITUDE] = (int)round($altitude / $count) + rand($config->minDiff, $config->maxDiff);
+						$map[$y][$x][Map::ALTITUDE] = (int)round($altitude / $count) + randInt($config->minDiff, $config->maxDiff);
 					}
 				}
 			}
@@ -211,7 +212,7 @@ trait Altitude
 				break;
 			}
 		}
-		$altitude = $altitude + rand($this->config->minDiff, $this->config->maxDiff) - $altDelta;
+		$altitude = $altitude + randInt($this->config->minDiff, $this->config->maxDiff) - $altDelta;
 		if ($altitude > $this->config->maxHeight) {
 			$altitude = $this->config->maxHeight;
 		}
@@ -242,7 +243,7 @@ trait Altitude
 		}
 		$altitude = $this->map[$y + $y1][$x + $x1][Map::ALTITUDE] + $this->map[$y + $y2][$x + $x2][Map::ALTITUDE]
 					+ $this->map[$y + $y3][$x + $x3][Map::ALTITUDE] + $this->map[$y + $y4][$x + $x4][Map::ALTITUDE];
-		$altitude = (int)round(($altitude + $altDelta) / $count) + rand($this->config->minDiff, $this->config->maxDiff);
+		$altitude = (int)round(($altitude + $altDelta) / $count) + randInt($this->config->minDiff, $this->config->maxDiff);
 		if ($altitude > $this->config->maxHeight) {
 			$altitude = $this->config->maxHeight;
 		}

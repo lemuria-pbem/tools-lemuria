@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 namespace Lemuria\Tools\Lemuria\Generator;
 
+use function Lemuria\randInt;
 use Lemuria\Tools\Lemuria\Map;
 use Lemuria\Tools\Lemuria\MapConfig;
 
@@ -56,9 +57,9 @@ trait Resources
 			// Deposit cores.
 			$deposit = array_fill(0, $config->height, array_fill(0, $config->width, array_fill(1, $maxZ, 0)));
 			for ($i = 0; $i < $resource[MapConfig::DEPOSIT_COUNT]; $i++) {
-				$x = rand($minX, $maxX);
-				$y = rand($minY, $maxY);
-				$z = rand(0, 2 * $dSpread + 1) - $depth0 + $dDepth - $dSpread;
+				$x = randInt($minX, $maxX);
+				$y = randInt($minY, $maxY);
+				$z = randInt(0, 2 * $dSpread + 1) - $depth0 + $dDepth - $dSpread;
 				if ($deposit[$y][$x][$z] >= 3000) {
 					continue;
 				}
@@ -81,7 +82,7 @@ trait Resources
 								$dist = $aA + $aB;
 							}
 							if ($dist <= 4) {
-								$d        = (int)round(0.7 * $dSize) + rand(0, (int)round(0.4 * $dSize));
+								$d        = (int)round(0.7 * $dSize) + randInt(0, (int)round(0.4 * $dSize));
 								$increase = (int)round($d * $this->gauss[$dA][$dist][abs($c)]);
 
 								$deposit[$y + $b][$x + $a][$zc] += $increase;
