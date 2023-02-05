@@ -22,6 +22,9 @@ use Lemuria\Tools\Lemuria\MapConfig;
  */
 trait Resources
 {
+	/**
+	 * @var array<int|string, array<int, array<int, float>>>
+	 */
 	private array $gauss = [];
 
 	public function getResource(string $resource): Map {

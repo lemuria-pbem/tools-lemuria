@@ -34,6 +34,9 @@ class Importer
 
 	private Converter $converter;
 
+	/**
+	 * @var array<int, array<int, int>>
+	 */
 	private array $map;
 
 	private int $minX;
@@ -46,22 +49,49 @@ class Importer
 
 	private int $xFactor;
 
+	/**
+	 * @var array<int, Region>
+	 */
 	private array $regions = [];
 
+	/**
+	 * @var array<int, Luxuries>
+	 */
 	private array $luxuries = [];
 
+	/**
+	 * @var array<int, Construction>
+	 */
 	private array $constructions = [];
 
+	/**
+	 * @var array<int, Unit>
+	 */
 	private array $units = [];
 
+	/**
+	 * @var array<int, Party>
+	 */
 	private array $parties = [];
 
+	/**
+	 * @var array<int, Vessel>
+	 */
 	private array $vessels = [];
 
+	/**
+	 * @var array<int, true>
+	 */
 	private array $invalidConstructions = [];
 
+	/**
+	 * @var array<int, int>
+	 */
 	private array $owners = [];
 
+	/**
+	 * @var array<int, int>
+	 */
 	private array $captains = [];
 
 	private int $world = 1;
@@ -182,14 +212,16 @@ class Importer
 					}
 					$class     = $this->converter->commodity($rows[0]['luxus']);
 					$nachfrage = (int)$rows[0]['nachfrage'];
-					$luxury    = self::createCommodity($class); /* @var Luxury $luxury */
-					$price     = $this->converter->demand($luxury, $nachfrage);
-					$luxuries  = new Luxuries(new Offer($luxury, $price));
+					/** @var Luxury $luxury */
+					$luxury   = self::createCommodity($class);
+					$price    = $this->converter->demand($luxury, $nachfrage);
+					$luxuries = new Luxuries(new Offer($luxury, $price));
 					for ($i = 1; $i < 8; $i++) {
 						$class     = $this->converter->luxury($rows[$i]['luxus']);
 						$nachfrage = (int)$rows[$i]['nachfrage'];
-						$luxury    = self::createCommodity($class); /* @var Luxury $luxury */
-						$price     = $this->converter->demand($luxury, $nachfrage);
+						/** @var Luxury $luxury */
+						$luxury = self::createCommodity($class);
+						$price  = $this->converter->demand($luxury, $nachfrage);
 						$luxuries->offsetGet($class)->setPrice($price);
 					}
 					$this->luxuries[$id] = $luxuries;
@@ -222,9 +254,8 @@ class Importer
 				if (!isset($this->regions[$rid])) {
 					throw new \RuntimeException('Invalid region ' . $rid . '.');
 				}
-				/* @var Region $region */
-				$region = $this->regions[$rid];
 
+				$region       = $this->regions[$rid];
 				$construction = new Construction();
 				$construction->setId(new Id($id));
 				$construction->setName($name ?? '');
@@ -271,7 +302,6 @@ class Importer
 			if (!isset($this->regions[$rid])) {
 				throw new \RuntimeException('Invalid region ' . $rid . '.');
 			}
-			/* @var Region $region */
 			$region     = $this->regions[$rid];
 			$ship       = self::createShip($this->converter->ship($type));
 			$material   = $ship->getMaterial()->offsetGet(Wood::class)->Count();
@@ -311,10 +341,9 @@ class Importer
 			if (!isset($this->regions[$rid])) {
 				throw new \RuntimeException('Invalid region ' . $rid . '.');
 			}
-			/* @var Region $region */
-			$region = $this->regions[$rid];
 
-			$party = new Party();
+			$region = $this->regions[$rid];
+			$party  = new Party();
 			$party->setId(Id::fromId($id));
 			$party->setName($name ?? '');
 			$party->setDescription($description ?? '');
@@ -334,8 +363,8 @@ class Importer
 			if (!isset($this->parties[$p1]) || !isset($this->parties[$p2])) {
 				throw new \RuntimeException('Error in alliance between ' . $p1 . ' and ' . $p2 . '.');
 			}
-			$party    = $this->parties[$p1]; /* @var Party $party */
-			$partner  = $this->parties[$p2]; /* @var Party $partner */
+			$party    = $this->parties[$p1];
+			$partner  = $this->parties[$p2];
 			$relation = new Relation($partner);
 			$relation->set($this->converter->agreement($option));
 			$party->Diplomacy()->add($relation);
@@ -367,15 +396,13 @@ class Importer
 				if (!isset($this->regions[$rid])) {
 					throw new \RuntimeException('Invalid region ' . $rid . ' for unit ' . $id . '.');
 				}
-				/* @var Region $region */
-				$region = $this->regions[$rid];
 
+				$region = $this->regions[$rid];
 				if (!isset($this->parties[$pid])) {
 					throw new \RuntimeException('Invalid party ' . $pid . ' for unit ' . $id . '.');
 				}
-				/* @var Party $party */
-				$party = $this->parties[$pid];
 
+				$party = $this->parties[$pid];
 				if ($cid > 0 && $vid > 0) {
 					$cid = 0;
 					Lemuria::Log()->warning('Unit ' . $id . ' cannot be in construction and vessel at the same time, removing from construction.');
@@ -387,7 +414,7 @@ class Importer
 						if (!isset($this->constructions[$cid])) {
 							throw new \RuntimeException('Invalid construction ' . $cid . ' for unit ' . $id . '.');
 						}
-						/* @var Construction $construction */
+
 						$construction = $this->constructions[$cid];
 					}
 				}
@@ -395,7 +422,7 @@ class Importer
 					if (!isset($this->vessels[$vid])) {
 						throw new \RuntimeException('Invalid vessel ' . $vid . ' for unit ' . $id . '.');
 					}
-					/* @var Vessel $vessel */
+
 					$vessel = $this->vessels[$vid];
 				}
 
@@ -486,31 +513,31 @@ class Importer
 
 	private function saveAll(string $storage): void {
 		$constructionsArray = [];
-		foreach ($this->constructions as $construction /* @var Construction $construction */) {
+		foreach ($this->constructions as $construction) {
 			$constructionsArray[] = $construction->serialize();
 		}
 		file_put_contents($storage . '/constructions.json', json_encode($constructionsArray, JSON_PRESERVE_ZERO_FRACTION));
 
 		$unitsArray = [];
-		foreach ($this->units as $unit /* @var Unit $unit */) {
+		foreach ($this->units as $unit) {
 			$unitsArray[] = $unit->serialize();
 		}
 		file_put_contents($storage . '/units.json', json_encode($unitsArray, JSON_PRESERVE_ZERO_FRACTION));
 
 		$partiesArray = [];
-		foreach ($this->parties as $party /* @var Party $party */) {
+		foreach ($this->parties as $party) {
 			$partiesArray[] = $party->serialize();
 		}
 		file_put_contents($storage . '/parties.json', json_encode($partiesArray, JSON_PRESERVE_ZERO_FRACTION));
 
 		$regionsArray = [];
-		foreach ($this->regions as $region /* @var Region $region */) {
+		foreach ($this->regions as $region) {
 			$regionsArray[] = $region->serialize();
 		}
 		file_put_contents($storage . '/regions.json', json_encode($regionsArray, JSON_PRESERVE_ZERO_FRACTION));
 
 		$vesselsArray = [];
-		foreach ($this->vessels as $vessel /* @var Vessel $vessel */) {
+		foreach ($this->vessels as $vessel) {
 			$vesselsArray[] = $vessel->serialize();
 		}
 		file_put_contents($storage . '/vessels.json', json_encode($vesselsArray, JSON_PRESERVE_ZERO_FRACTION));
@@ -535,7 +562,6 @@ class Importer
 			$yRegions = $this->map[$y];
 			foreach ($yRegions as $id) {
 				if ($id) {
-					/* @var Region $region */
 					$region = $this->regions[$id];
 					echo substr(getClass($region->Landscape()), 0, 1);
 				} else {

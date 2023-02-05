@@ -2,7 +2,6 @@
 declare (strict_types = 1);
 namespace Lemuria\Tools\Lemuria\Fantasya;
 
-use Lemuria\Model\World\Direction;
 use function Lemuria\getClass;
 use Lemuria\Model\Fantasya\Ability;
 use Lemuria\Model\Fantasya\Building\AbstractCastle;
@@ -90,6 +89,7 @@ use Lemuria\Model\Fantasya\Talent\Taxcollecting;
 use Lemuria\Model\Fantasya\Talent\Trading;
 use Lemuria\Model\Fantasya\Talent\Weaponry;
 use Lemuria\Model\Fantasya\Talent\Woodchopping;
+use Lemuria\Model\World\Direction;
 
 final class Converter
 {
