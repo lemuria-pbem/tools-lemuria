@@ -4,11 +4,11 @@ namespace Lemuria\Tools\Lemuria;
 
 final class Terrain
 {
-	public const OCEAN = 0;
+	public const int OCEAN = 0;
 
-	public const PLAIN = 1;
+	public const int PLAIN = 1;
 
-	public const HIGHLAND = 2;
+	public const int HIGHLAND = 2;
 
-	public const MOUNTAIN = 3;
+	public const int MOUNTAIN = 3;
 }

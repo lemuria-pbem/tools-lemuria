@@ -12,37 +12,37 @@ final class MapConfig
 	/**
 	 * Altitude default for land mass creation.
 	 */
-	public const ZERO = -500;
+	public const int ZERO = -500;
 
 	/**
 	 * Altitude of ocean regions.
 	 */
-	public const OCEAN = self::ZERO + 100;
+	public const int OCEAN = self::ZERO + 100;
 
 	/**
 	 * Average deposit in center.
 	 */
-	public const DEPOSIT_SIZE = 0;
+	public const int DEPOSIT_SIZE = 0;
 
 	/**
 	 * Number of deposits.
 	 */
-	public const DEPOSIT_COUNT = 1;
+	public const int DEPOSIT_COUNT = 1;
 
 	/**
 	 * Average depth.
 	 */
-	public const DEPOSIT_DEPTH = 2;
+	public const int DEPOSIT_DEPTH = 2;
 
 	/**
 	 * Depth spread (levels).
 	 */
-	public const DEPOSIT_SPREAD = 3;
+	public const int DEPOSIT_SPREAD = 3;
 
 	/**
 	 * Deposit a-value for Gauss.
 	 */
-	public const DEPOSIT_A = 4;
+	public const int DEPOSIT_A = 4;
 
 	/**
 	 * Start of land mass in the west.

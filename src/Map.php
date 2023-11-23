@@ -8,35 +8,35 @@ use Lemuria\Exception\LemuriaException;
 
 final class Map implements \ArrayAccess
 {
-	public const ALTITUDE = 0;
+	public const int ALTITUDE = 0;
 
-	public const TYPE = 1;
+	public const int TYPE = 1;
 
-	public const MOISTURE = 2;
+	public const int MOISTURE = 2;
 
-	public const PRECIPITATION = 3;
+	public const int PRECIPITATION = 3;
 
-	public const POTENTIAL = 4;
+	public const int POTENTIAL = 4;
 
-	public const BOOL = 5;
+	public const int BOOL = 5;
 
-	public const DIRECTION = 6;
+	public const int DIRECTION = 6;
 
-	public const FLOW = 7;
+	public const int FLOW = 7;
 
-	public const WATER = 8;
+	public const int WATER = 8;
 
-	public const VEGETATION = 9;
+	public const int VEGETATION = 9;
 
-	public const FERTILITY = 10;
+	public const int FERTILITY = 10;
 
-	public const ARABLE = 11;
+	public const int ARABLE = 11;
 
-	public const LAND = 12;
+	public const int LAND = 12;
 
-	public const GOOD = 13;
+	public const int GOOD = 13;
 
-	public const RESOURCE = 14;
+	public const int RESOURCE = 14;
 
 	private int $width;
 

@@ -4,17 +4,35 @@ namespace Lemuria\Tools\Lemuria;
 
 final class Direction
 {
-	public const NONE = [];
+	public const array NONE = [];
 
-	public const NE = [0, 1];
+	/**
+	 * @type array<int>
+	 */
+	public const array NE = [0, 1];
 
-	public const E = [1, 0];
+	/**
+	 * @type array<int>
+	 */
+	public const array E = [1, 0];
 
-	public const SE = [1, -1];
+	/**
+	 * @type array<int>
+	 */
+	public const array SE = [1, -1];
 
-	public const SW = [0, -1];
+	/**
+	 * @type array<int>
+	 */
+	public const array SW = [0, -1];
 
-	public const W = [-1, 0];
+	/**
+	 * @type array<int>
+	 */
+	public const array W = [-1, 0];
 
-	public const NW = [-1, 1];
+	/**
+	 * @type array<int>
+	 */
+	public const array NW = [-1, 1];
 }

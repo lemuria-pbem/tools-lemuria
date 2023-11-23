@@ -6,13 +6,13 @@ use JetBrains\PhpStorm\Pure;
 
 class MapRenderer implements \Stringable
 {
-	protected const TABS = 2;
+	protected const int TABS = 2;
 
-	protected const ROW_CLASS = 'y';
+	protected const string ROW_CLASS = 'y';
 
-	protected const PLACEHOLDER = '$region';
+	protected const string PLACEHOLDER = '$region';
 
-	protected const TYPE_CLASS = 'landscape-' . self::PLACEHOLDER;
+	protected const string TYPE_CLASS = 'landscape-' . self::PLACEHOLDER;
 
 	public static int $tabs = self::TABS;
 

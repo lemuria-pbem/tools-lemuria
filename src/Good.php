@@ -4,21 +4,21 @@ namespace Lemuria\Tools\Lemuria;
 
 final class Good
 {
-	public const FISH = 'f';
+	public const string FISH = 'f';
 
-	public const CROP = 'c';
+	public const string CROP = 'c';
 
-	public const MEAT = 'm';
+	public const string MEAT = 'm';
 
-	public const GAME = 'g';
+	public const string GAME = 'g';
 
-	public const WOOD = 'w';
+	public const string WOOD = 'w';
 
-	public const STONE = 's';
+	public const string STONE = 's';
 
-	public const QUARTZ = 'q';
+	public const string QUARTZ = 'q';
 
-	public const IRON = 'i';
+	public const string IRON = 'i';
 
-	public const MITHRIL = 'l';
+	public const string MITHRIL = 'l';
 }

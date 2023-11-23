@@ -4,13 +4,13 @@ namespace Lemuria\Tools\Lemuria;
 
 final class Land
 {
-	public const WATER = 'w';
+	public const string WATER = 'w';
 
-	public const FIELD = 'a';
+	public const string FIELD = 'a';
 
-	public const FOREST = 'f';
+	public const string FOREST = 'f';
 
-	public const PASTURE = 'p';
+	public const string PASTURE = 'p';
 
-	public const BUSH = 'b';
+	public const string BUSH = 'b';
 }
