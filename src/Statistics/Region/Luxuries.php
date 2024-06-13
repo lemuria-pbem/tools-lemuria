@@ -2,7 +2,7 @@
 declare(strict_types = 1);
 namespace Lemuria\Tools\Lemuria\Statistics\Region;
 
-use jc21\CliTable;
+use SatHub\CliTable\CliTable;
 use Lemuria\Engine\Fantasya\Factory\GrammarTrait;
 use Lemuria\Engine\Fantasya\Message\Casus;
 use Lemuria\Model\Fantasya\Commodity\Luxury\AbstractLuxury;
@@ -16,9 +16,9 @@ class Luxuries
 {
 	use GrammarTrait;
 
-	private const LANDSCAPE = 'landscape';
+	private const string LANDSCAPE = 'landscape';
 
-	private const TRANSLATION = 'Landschaft';
+	private const string TRANSLATION = 'Landschaft';
 
 	private CliTable $table;
 
