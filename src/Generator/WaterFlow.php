@@ -2,8 +2,6 @@
 declare(strict_types = 1);
 namespace Lemuria\Tools\Lemuria\Generator;
 
-use JetBrains\PhpStorm\Pure;
-
 use Lemuria\Tools\Lemuria\Area;
 use Lemuria\Tools\Lemuria\Direction;
 use Lemuria\Tools\Lemuria\Map;
@@ -12,7 +10,7 @@ use Lemuria\Tools\Lemuria\Terrain;
 
 trait WaterFlow
 {
-	#[Pure] public function getPrecipitationMap(): Map {
+	public function getPrecipitationMap(): Map {
 		return new Map($this->config, $this->map, Map::WATER);
 	}
 

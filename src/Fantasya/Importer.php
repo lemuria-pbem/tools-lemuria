@@ -2,8 +2,6 @@
 declare(strict_types = 1);
 namespace Lemuria\Tools\Lemuria\Fantasya;
 
-use JetBrains\PhpStorm\Pure;
-
 use function Lemuria\getClass;
 use Lemuria\Exception\EntitySetException;
 use Lemuria\Id;
@@ -96,7 +94,7 @@ class Importer
 
 	private int $world = 1;
 
-	#[Pure] public function __construct(\PDO $database) {
+	public function __construct(\PDO $database) {
 		$this->database  = $database;
 		$this->converter = new Converter();
 	}
